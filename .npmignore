@@ -1,0 +1,8 @@
+src/
+tests/
+*.ts
+*.test.*
+vitest.config.*
+tsconfig.json
+.tool-versions
+README_dev.md
