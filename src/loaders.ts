@@ -1,27 +1,29 @@
-import { loadCopydeck } from "./engine";
-import type { CopyDeck } from "./types";
+import { loadCopydeck } from "./engine.js";
+import type { CopyDeck } from "./types.js";
 
-/**
- * Loads a copydeck from /copydecks/{locale}/copydeck.json.
- * Falls back to a base language (e.g. "en" from "en-GB") or "en".
- */
-export async function loadCopydeckFor(locale: string = "en"): Promise<CopyDeck> {
+type Options = { base?: string };
+
+export async function loadCopydeckFor(locale = "en", opts: Options = {}): Promise<CopyDeck> {
   const tryLocales = [locale];
-  const base = locale.split("-")[0];
-  if (base !== locale) tryLocales.push(base);
+  const baseLang = locale.split("-")[0];
+  if (baseLang !== locale) tryLocales.push(baseLang);
   if (!tryLocales.includes("en")) tryLocales.push("en");
+
+  const baseUrl = opts.base
+    ? new URL(opts.base, window.location.origin)
+    : new URL("./copydecks/", import.meta.url);
 
   for (const lang of tryLocales) {
     try {
-      const res = await fetch(`/copydecks/${lang}/copydeck.json`);
+      const url = new URL(`${lang}/copydeck.json`, baseUrl).toString();
+      const res = await fetch(url);
       if (res.ok) {
-        const deck = await res.json();
+        const deck = (await res.json()) as CopyDeck;
         loadCopydeck(deck);
         return deck;
       }
-    } catch {
-      /* try next */
-    }
+    } catch { /* try next */ }
   }
   throw new Error(`No copydeck found for ${tryLocales.join(", ")}`);
 }
+

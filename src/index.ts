@@ -1,11 +1,5 @@
-export type {
-  Trace,
-  ExplainOptions,
-  ExplainResult,
-  CopyDeck,
-  AdapterFn
-} from "./types";
-
-export { loadCopydeck, registerAdapter, explain } from "./engine";
-export { skulptAdapter } from "./adapters/skulpt";
-export { pyodideAdapter } from "./adapters/pyodide";
+export type { Trace, ExplainOptions, ExplainResult, CopyDeck, AdapterFn } from "./types.js";
+export { loadCopydeck, registerAdapter, explain } from "./engine.js";
+export { skulptAdapter } from "./adapters/skulpt.js";
+export { pyodideAdapter } from "./adapters/pyodide.js";
+export { loadCopydeckFor } from "./loaders.js";

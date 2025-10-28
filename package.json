@@ -11,6 +11,9 @@
   "exports": { ".": "./dist/index.js" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:browser": "esbuild src/index.ts --bundle --format=esm --outfile=dist/index.browser.js",
+    "build:assets": "mkdir -p dist/copydecks && cp -R copydecks/* dist/copydecks/",
+    "build:all": "npm run build && npm run build:browser && npm run build:assets",
     "test": "vitest run",
     "dev:test": "vitest"
   },

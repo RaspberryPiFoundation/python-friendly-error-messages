@@ -87,7 +87,7 @@ npm run dev:test
 Create a clean build for distribution:
 
 ```
-npm run build
+npm run build:all && npm run build:browser
 ```
 
 Output files will be in dist/:
