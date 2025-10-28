@@ -1,4 +1,4 @@
-# Python friendly error messages
+# Python Friendly Error Messages
 
 - [ ] Ensure all strings in `src/` are localised
 - [ ] Consider renaming `explain()` to something like `friendlyExplain()`?
@@ -10,11 +10,10 @@ It can be used in browser-based editors (like RPF's [Code Editor web component](
 
 ## Features
 
-- Parses and normalizes errors from Skulpt or Pyodide (via adapters)
+- Parses and normalises errors from Skulpt or Pyodide (via adapters)
 - Matches errors against a copydeck (JSON rules and templates)
 - Copydeck-based explanations can be localised
-- Returns structured explanations or ready-made HTML snippets
-- Designed for both integration into browser editors and standalone tools
+- Returns structured explanations as well as ready-made HTML snippets
 
 ## Usage
 
