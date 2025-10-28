@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "language": "en",
+    "version": 1
+  },
+  "glossary": {
+    "kid": {
+      "variable": "name",
+      "function": "recipe",
+      "object": "thing"
+    }
+  },
+  "errors": {
+    "NameError": {
+      "variants": [
+        {
+          "title": "This name doesn't exist yet",
+          "summary": "Your code uses \"{{name}}\", but it hasn't been created yet. Check {{loc}}. If you meant the text <i>{{name}}</i>, put it in double quotes.",
+          "why": "Python needs to see a line that creates \"{{name}}\" before you use it.",
+          "steps": [
+            "Make it first (for example: {{name}} = 0).",
+            "Check spelling and capital letters."
+          ]
+        },
+        {
+          "if": {
+            "match_message": ["is not defined"]
+          },
+          "title": "This name doesn't exist here",
+          "summary": "\"{{name}}\" might be created somewhere else, but you're using it at {{loc}}. If you meant the text <i>{{name}}</i>, put it in double quotes.",
+          "why": "A name created in another place might not be available here.",
+          "steps": [
+            "Move the line that makes it to above where you use it.",
+            "Or set it here just before you use it."
+          ]
+        }
+      ]
+    },
+
+    "UnboundLocalError": {
+      "variants": [
+        {
+          "title": "Used before it gets a value in this part of the code",
+          "summary": "Here, \"{{name}}\" is used at {{loc}} before you give it a value.",
+          "why": "Because you assign to this name in this part, Python treats it as local here. It is read before you set it.",
+          "steps": [
+            "Give it a value first (add a line like {{name}} = ... before you use it).",
+            "If you meant a different value, use a different name here."
+          ]
+        }
+      ]
+    },
+
+    "SyntaxError": {
+      "variants": [
+        {
+          "if": {
+            "match_code": ["^(\\s*)(if|for|while|def|class|elif|else|try|except|with)\\b"],
+            "not_code": [":\\s*$"]
+          },
+          "title": "Missing colon (:) at the end",
+          "summary": "This line starts a block and needs a colon at {{loc}}: {{codeLine}}",
+          "why": "In Python, lines that start a block must end with a colon.",
+          "steps": [
+            "Add a colon (:) at the end of that line."
+          ]
+        },
+        {
+          "title": "The line is incomplete or mismatched",
+          "summary": "Something is missing or extra — like a colon, bracket, or quote.",
+          "why": "If (), [], {}, :, or quotes don't match, Python can't read the line.",
+          "steps": [
+            "Make (), [], and {} come in matching pairs.",
+            "Add the missing colon (:).",
+            "Use matching opening and closing quotes."
+          ]
+        }
+      ]
+    },
+
+    "IndentationError": {
+      "variants": [
+        {
+          "title": "The indentation doesn't match",
+          "summary": "All lines in a block must start in the same column. Fix around {{loc}}.",
+          "why": "Python groups code by indentation. Mixing tabs and spaces or uneven indents breaks the block.",
+          "steps": [
+            "Use 4 spaces per level (not tabs).",
+            "Line up all lines in the block."
+          ]
+        }
+      ]
+    },
+
+    "TypeError": {
+      "variants": [
+        {
+          "title": "These values don't work together",
+          "summary": "You're combining different kinds of values (for example, a number and a word).",
+          "why": "Operators like + only work with certain kinds together.",
+          "steps": [
+            "Change a value to the right kind: int(\"3\") or str(7).",
+            "Use an operator that works with these values."
+          ]
+        }
+      ]
+    },
+
+    "AttributeError": {
+      "variants": [
+        {
+          "if": {
+            "match_code": ["\\.push\\s*\\("],
+            "match_message": ["'push'"]
+          },
+          "title": "Lists don't have that feature",
+          "summary": "You're calling a list method that doesn't exist.",
+          "why": "Lists use .append(value) or .extend([...]). There is no .push().",
+          "steps": [
+            "Use list.append(one_item).",
+            "Use list.extend([many, items])."
+          ]
+        },
+        {
+          "title": "This thing doesn't have that name after the dot",
+          "summary": "The thing you're using doesn't have that attribute or method.",
+          "why": "That kind of thing doesn't provide this feature.",
+          "steps": [
+            "Check the spelling after the dot.",
+            "Use a name that exists for this kind of thing."
+          ]
+        }
+      ]
+    },
+
+    "IndexError": {
+      "variants": [
+        {
+          "title": "That position is outside the list",
+          "summary": "You're asking for a list position that isn't there.",
+          "why": "List positions start at 0 and stop before the list's length.",
+          "steps": [
+            "Check the length with len(the_list).",
+            "Use a position number smaller than len(the_list)."
+          ]
+        }
+      ]
+    },
+
+    "KeyError": {
+      "variants": [
+        {
+          "title": "That key isn't in the dictionary",
+          "summary": "You looked up a key that the dictionary doesn't have.",
+          "why": "The dictionary has no value for that key.",
+          "steps": [
+            "Check the exact key (spelling and capital letters).",
+            "If it might be missing, use dictionary.get(key, default) or add the key first."
+          ]
+        }
+      ]
+    },
+
+    "Other": {
+      "variants": [
+        {
+          "title": "Python error",
+          "summary": "Start with the last line of the message and the highlighted code line.",
+          "why": "The last line of the traceback tells you the error type and main cause.",
+          "steps": [
+            "Fix one small thing and run again."
+          ]
+        }
+      ]
+    }
+  }
+}
