@@ -8,8 +8,12 @@
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "exports": { ".": "./dist/index.js" },
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
     "build": "tsc -p tsconfig.json",
     "build:browser": "esbuild src/index.ts --bundle --format=esm --outfile=dist/index.browser.js",
     "build:assets": "mkdir -p dist/copydecks && cp -R copydecks/* dist/copydecks/",
@@ -18,7 +22,10 @@
     "dev:test": "vitest"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
+    "cpy-cli": "^6.0.0",
+    "esbuild": "^0.25.11",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
     "vitest": "^2.1.3"
   }
 }
