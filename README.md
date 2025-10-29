@@ -1,7 +1,9 @@
-# Python friendly error messages
+# Python Friendly Error Messages
 
 - [ ] Ensure all strings in `src/` are localised
 - [ ] Consider renaming `explain()` to something like `friendlyExplain()`?
+- [ ] Figure out where the built packages should live / be served from
+- [ ] Open source?
 
 A small, runtime-agnostic, library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
 
@@ -9,11 +11,10 @@ It can be used in browser-based editors (like RPF's [Code Editor web component](
 
 ## Features
 
-- Parses and normalizes errors from Skulpt or Pyodide (via adapters)
+- Parses and normalises errors from Skulpt or Pyodide (via adapters)
 - Matches errors against a copydeck (JSON rules and templates)
 - Copydeck-based explanations can be localised
-- Returns structured explanations or ready-made HTML snippets
-- Designed for both integration into browser editors and standalone tools
+- Returns structured explanations as well as ready-made HTML snippets
 
 ## Usage
 
@@ -91,13 +92,7 @@ Create a clean build for distribution:
 npm run build:all && npm run build:browser
 ```
 
-Output files will be in dist/:
-```
-dist/
-├─ index.js
-├─ index.d.ts
-└─ adapters/...
-```
+Output files will be in `dist/`.
 
 You can now import it elsewhere (see Usage notes):
 
