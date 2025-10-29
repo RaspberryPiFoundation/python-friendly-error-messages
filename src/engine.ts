@@ -139,7 +139,7 @@ export const explain = (opts: ExplainOptions): ExplainResult => {
     };
   }
 
-  // Optional verbosity shaping (kept small)
+  // not convinced by this implementation, and may decide to drop the verbosity option...
   if (verbosity === "brief") {
     chosen.why = undefined;
     chosen.steps = chosen.steps?.slice(0, 1);
