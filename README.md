@@ -24,7 +24,7 @@ import {
   skulptAdapter,
   pyodideAdapter,
   explain
-} from "python-friendly-errors";
+} from "python-friendly-error-messages";
 
 await loadCopydeckFor(navigator.language); // falls back to "en"
 
