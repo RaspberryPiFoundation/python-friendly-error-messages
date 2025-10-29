@@ -50,7 +50,7 @@ const result = explain({
 
 ### Prerequisites
 
-- **asdf** for environment management  
+- *asdf** for environment management  
 - **Node.js** (installed via asdf)  
 - **npm** (bundled with Node)
 
@@ -65,7 +65,7 @@ asdf plugin add nodejs
 asdf install
 ```
 
-This will read .tool-versions and install Node.js 22.11.0 automatically.
+This will read `.tool-versions` and install the appropriate version of Node.js automatically.
 
 ```
 npm install
@@ -94,8 +94,4 @@ npm run build:all && npm run build:browser
 
 Output files will be in `dist/`.
 
-You can now import it elsewhere (see Usage notes):
-
-```
-import { loadCopydeck, registerAdapter, skulptAdapter, explain } from "python-friendly-error
-```
+You can now import, and use it, elsewhere (see Usage notes).
