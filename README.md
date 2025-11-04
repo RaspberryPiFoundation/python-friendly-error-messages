@@ -50,7 +50,7 @@ const result = explain({
 
 ### Prerequisites
 
-- *asdf** for environment management  
+- **asdf** for environment management  
 - **Node.js** (installed via asdf)  
 - **npm** (bundled with Node)
 
