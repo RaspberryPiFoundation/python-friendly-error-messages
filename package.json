@@ -1,5 +1,5 @@
 {
-  "name": "python-friendly-error-messages",
+  "name": "@raspberrypifoundation/python-friendly-error-messages",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -15,6 +15,9 @@
     "dist",
     "copydecks"
   ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
