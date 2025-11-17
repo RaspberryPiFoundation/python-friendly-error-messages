@@ -6,9 +6,12 @@
     "moduleResolution": "Bundler",
     "declaration": true,
     "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
-  "include": ["src", "tests"]
+  "include": ["src"],
+  "exclude": ["tests", "node_modules", "dist", "src/**/*.browser.ts"]
 }

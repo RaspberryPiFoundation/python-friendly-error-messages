@@ -3,6 +3,7 @@
 - [ ] Ensure all strings in `src/` are localised
 - [ ] Consider renaming `explain()` to something like `friendlyExplain()`?
 - [ ] Figure out where the built packages should live / be served from
+  - [ ] Set up automated publishing through GitHub Actions
 - [ ] BEM-style formatting for CSS classes?
 - [ ] Open source?
 

@@ -9,9 +9,34 @@ export async function loadCopydeckFor(locale = "en", opts: Options = {}): Promis
   if (baseLang !== locale) tryLocales.push(baseLang);
   if (!tryLocales.includes("en")) tryLocales.push("en");
 
-  const baseUrl = opts.base
-    ? new URL(opts.base, window.location.origin)
-    : new URL("./copydecks/", import.meta.url);
+  let baseUrl: URL;
+  if (opts.base) {
+    baseUrl = new URL(opts.base, window.location.origin);
+  } else {
+    // try to resolve copydecks relative to package location
+    // in bundled environments (webpack/vite), import.meta.url points to the bundle
+    try {
+      const metaUrl = import.meta.url;
+      // construct path dynamically to avoid webpack static analysis
+      const copydecksDir = 'copydecks';
+      const separator = '/';
+      const path = '.' + separator + copydecksDir + separator;
+      
+      // check if this looks like a bundled file
+      if (metaUrl.includes('index.browser.js') || metaUrl.includes('dist/')) {
+        // in a bundled environment, copydecks are in dist/copydecks
+        const bundleDir = metaUrl.substring(0, metaUrl.lastIndexOf('/'));
+        baseUrl = new URL(path, bundleDir);
+      } else {
+        baseUrl = new URL(path, metaUrl);
+      }
+    } catch {
+      throw new Error(
+        'Unable to resolve copydecks path. Please provide the base URL: ' +
+        'loadCopydeckFor(locale, { base: "/path/to/copydecks/" })'
+      );
+    }
+  }
 
   for (const lang of tryLocales) {
     try {
@@ -22,7 +47,7 @@ export async function loadCopydeckFor(locale = "en", opts: Options = {}): Promis
         loadCopydeck(deck);
         return deck;
       }
-    } catch { /* try next */ }
+    } catch {}
   }
   throw new Error(`No copydeck found for ${tryLocales.join(", ")}`);
 }
