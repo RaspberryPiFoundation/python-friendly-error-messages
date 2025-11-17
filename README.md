@@ -3,6 +3,7 @@
 - [ ] Ensure all strings in `src/` are localised
 - [ ] Consider renaming `explain()` to something like `friendlyExplain()`?
 - [ ] Figure out where the built packages should live / be served from
+- [ ] BEM-style formatting for CSS classes?
 - [ ] Open source?
 
 A small, runtime-agnostic, library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
@@ -65,7 +66,7 @@ asdf plugin add nodejs
 asdf install
 ```
 
-This will read .tool-versions and install Node.js 22.11.0 automatically.
+This will read `.tool-versions` and install the appropriate version of Node.js automatically.
 
 ```
 npm install
@@ -94,8 +95,4 @@ npm run build:all && npm run build:browser
 
 Output files will be in `dist/`.
 
-You can now import it elsewhere (see Usage notes):
-
-```
-import { loadCopydeck, registerAdapter, skulptAdapter, explain } from "python-friendly-error
-```
+You can now import, and use it, elsewhere (see Usage notes).
