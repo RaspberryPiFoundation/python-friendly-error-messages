@@ -8,11 +8,12 @@ const lastLineTypeMessage = (raw: string) => {
 };
 
 export const skulptAdapter: AdapterFn = (raw, code) => {
-  // Skulpt traces vary - we accept both "Traceback..." and editor summaries
+  if (!/skulpt/i.test(raw) && !/Traceback/i.test(raw)) {
+    // still try; skulpt often includes "on line X of", etc.
+  }
   const { type, message, tail, lines } = lastLineTypeMessage(raw);
   let file: string | undefined, line: number | undefined, col: number | undefined;
 
-  // standard Python-style frames (Skulpt often emits these)
   for (const L of lines) {
     const mm = L.match(/File\s+"([^"]+)",\s+line\s+(\d+)/i);
     if (mm) {
@@ -20,14 +21,11 @@ export const skulptAdapter: AdapterFn = (raw, code) => {
       line = parseInt(mm[2], 10);
     }
   }
-
   if (!line) {
-    const m1 = raw.match(/on\s+line\s+(\d+)\s+of\s+([^\s:]+)(?::\s*([\s\S]*))?/i);
-    if (m1) {
-      line = parseInt(m1[1], 10);
-      file = m1[2];
-      const afterColon = (m1[3] || "").split(/\r?\n/);
-      const snippet = afterColon.find(s => s.trim() && !/^\s*\^+\s*$/.test(s));
+    const loc = tail.match(/\b(?:on|at)\s+line\s+(\d+)\s+(?:of|in)\s+([^\s:]+)\b/i);
+    if (loc) {
+      line = parseInt(loc[1], 10);
+      file = loc[2];
     }
   }
 
@@ -48,20 +46,10 @@ export const skulptAdapter: AdapterFn = (raw, code) => {
   };
 
   if (code && line) {
-    const codeLines = code.split(/\r?\n/);
-    t.codeLine = codeLines[line - 1]?.trim();
-    t.codeBefore = codeLines.slice(Math.max(0, line - 3), line - 1);
-    t.codeAfter = codeLines.slice(line, line + 2);
-  } else {
-    const m1 = raw.match(/on\s+line\s+\d+\s+of\s+[^\s:]+:(?:\s*([\s\S]*))?/i);
-    if (m1 && m1[1]) {
-      const snippet = m1[1].split(/\r?\n/).find(s => s.trim() && !/^\s*\^+\s*$/.test(s));
-      if (snippet) t.codeLine = snippet.trim();
-    }
+    const lines = code.split(/\r?\n/);
+    t.codeLine = lines[line - 1]?.trim();
+    t.codeBefore = lines.slice(Math.max(0, line - 3), line - 1);
+    t.codeAfter = lines.slice(line, line + 2);
   }
-
-  const looksLikeError = /Error\b/i.test(raw) || /Traceback/i.test(raw) || /skulpt/i.test(raw);
-  if (!looksLikeError) return null;
-
   return t;
 };
