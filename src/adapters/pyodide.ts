@@ -21,6 +21,16 @@ export const pyodideAdapter: AdapterFn = (raw, code) => {
     if (cc) col = parseInt(cc[1], 10);
   }
 
+  if (!line) {
+    const m1 = raw.match(/on\s+line\s+(\d+)\s+of\s+([^\s:]+)(?::\s*([\s\S]*))?/i);
+    if (m1) {
+      line = parseInt(m1[1], 10);
+      file = m1[2];
+      const afterColon = (m1[3] || "").split(/\r?\n/);
+      const snippet = afterColon.find(s => s.trim() && !/^\s*\^+\s*$/.test(s));
+    }
+  }
+
   let name: string | undefined;
   const q = (message || "").match(/["']([^"']+)["']/);
   if (q) name = q[1];
@@ -38,10 +48,20 @@ export const pyodideAdapter: AdapterFn = (raw, code) => {
   };
 
   if (code && line) {
-    const lines = code.split(/\r?\n/);
-    t.codeLine = lines[line - 1]?.trim();
-    t.codeBefore = lines.slice(Math.max(0, line - 3), line - 1);
-    t.codeAfter = lines.slice(line, line + 2);
+    const codeLines = code.split(/\r?\n/);
+    t.codeLine = codeLines[line - 1]?.trim();
+    t.codeBefore = codeLines.slice(Math.max(0, line - 3), line - 1);
+    t.codeAfter = codeLines.slice(line, line + 2);
+  } else {
+    const m1 = raw.match(/on\s+line\s+\d+\s+of\s+[^\s:]+:(?:\s*([\s\S]*))?/i);
+    if (m1 && m1[1]) {
+      const snippet = m1[1].split(/\r?\n/).find(s => s.trim() && !/^\s*\^+\s*$/.test(s));
+      if (snippet) t.codeLine = snippet.trim();
+    }
   }
+
+  const looksLikeError = /Error\b/i.test(raw) || /Traceback/i.test(raw) || /pyodide/i.test(raw);
+  if (!looksLikeError) return null;
+
   return t;
 };

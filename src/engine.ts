@@ -13,15 +13,24 @@ export const loadCopydeck = (deck: CopyDeck) => (S.copy = deck);
 export const registerAdapter = (name: string, fn: (raw: string, code?: string) => Trace | null) =>
   (S.adapters[name] = fn);
 
+const isTrace = (x: unknown): x is Trace =>
+  !!x && typeof x === "object" && "raw" in (x as any) && "message" in (x as any);
+
 const coerceTrace = (input: string | Error | Trace, code?: string): Trace => {
-  if ((input as Trace).raw !== undefined) return input as Trace;
-  const raw = typeof input === "string" ? input : String((input as Error).stack || (input as Error).message || input);
+  if (isTrace(input)) return input as Trace;
+
+  const raw =
+    typeof input === "string"
+      ? input
+      : String((input as Error).stack || (input as Error).message || input);
+
   // try adapters in registration order
   for (const key of Object.keys(S.adapters)) {
     const t = S.adapters[key](raw, code);
     if (t) return t;
   }
-  // generic fallback
+
+  // fallback generic trace
   const lines = raw.trim().split(/\r?\n/).filter(Boolean);
   const tail = lines[lines.length - 1] || "";
   const m = tail.match(/^(\w+Error)\s*:\s*(.*)$/);
@@ -31,8 +40,9 @@ const coerceTrace = (input: string | Error | Trace, code?: string): Trace => {
     raw,
     runtime: "unknown"
   };
-  if (code) {
-    t.codeLine = code.split(/\r?\n/)[(t.line || 1) - 1]?.trim();
+
+  if (code && t.line) {
+    t.codeLine = code.split(/\r?\n/)[t.line - 1]?.trim();
   }
   return t;
 };
@@ -128,6 +138,7 @@ export const explain = (opts: ExplainOptions): ExplainResult => {
 
   const chosen = pickVariant(trace, code, audience);
   if (!chosen) {
+    // this generic fallback copy should live in the copydeck instead...
     return {
       trace,
       variantId: "Other/variants/0",

@@ -55,6 +55,17 @@
       "variants": [
         {
           "if": {
+            "match_message": ["expected ':'"]
+          },
+          "title": "Missing colon (:) at the end",
+          "summary": "This line starts a block and needs a colon at {{loc}}: {{codeLine}}",
+          "why": "In Python, lines that start a block must end with a colon.",
+          "steps": [
+            "Add a colon (:) at the end of that line."
+          ]
+        },
+        {
+          "if": {
             "match_code": ["^(\\s*)(if|for|while|def|class|elif|else|try|except|with)\\b"],
             "not_code": [":\\s*$"]
           },
