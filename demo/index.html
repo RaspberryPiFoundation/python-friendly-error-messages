@@ -12,7 +12,7 @@
   <div class="container">
     <h1>Python Friendly Error Messages - Demo</h1>
 
-    <div id="demo-container" class="loading">
+    <div id="demo-container">
       Loading demo...
     </div>
   </div>
@@ -117,7 +117,7 @@ ZeroDivisionError: division by zero`
         registerAdapter('skulpt', skulptAdapter);
         registerAdapter('pyodide', pyodideAdapter);
 
-        let html = '<div class="demo-grid">';
+        let html = '<div class="demo__grid">';
 
         for (const example of examples) {
           try {
@@ -129,37 +129,34 @@ ZeroDivisionError: division by zero`
             });
 
             html += `
-                          <div class="demo-card">
-                              <h2>
-                                  ${example.title}
-                                  <span class="runtime-badge ${example.runtime}">${example.runtime}</span>
-                              </h2>
-                              
-                              <div class="demo-card-content">
-                                  <div class="trace-section">
-                                      <h3>Original Trace</h3>
-                                      <div class="trace-raw">${escapeHtml(example.trace)}</div>
-                                  </div>
-                                  
-                                  <div class="trace-section">
-                                      <h3>Code</h3>
-                                      <div class="code-example">${escapeHtml(example.code)}</div>
-                                  </div>
-                                  
-                                  <div class="explanation">
-                                      <h3>Friendly Explanation</h3>
-                                      ${result.html}
-                                  </div>
-                              </div>
-                          </div>
-                      `;
+              <div class="demo__card">
+                <h2>
+                  ${example.title}
+                  <span class="demo__badge demo__badge--${example.runtime}">${example.runtime}</span>
+                </h2>
+                <div class="demo__card-content">
+                  <div class="demo__trace-section">
+                    <h3>Original Trace</h3>
+                    <div class="demo__trace-raw">${escapeHtml(example.trace)}</div>
+                  </div>
+                  <div class="demo__trace-section">
+                    <h3>Original Code</h3>
+                    <div class="demo__code-example">${escapeHtml(example.code)}</div>
+                  </div>
+                  <div class="demo__explanation">
+                    <h3>Friendly Explanation</h3>
+                    ${result.html}
+                  </div>
+                </div>
+              </div>
+            `;
           } catch (err) {
             html += `
-                          <div class="demo-card">
-                              <h2>${example.title}</h2>
-                              <div class="error">Error processing: ${escapeHtml(err.message)}</div>
-                          </div>
-                      `;
+              <div class="demo__card">
+                <h2>${example.title}</h2>
+                <div class="demo__error">Error processing: ${escapeHtml(err.message)}</div>
+              </div>
+            `;
           }
         }
 
@@ -167,17 +164,17 @@ ZeroDivisionError: division by zero`
         container.innerHTML = html;
 
         // click handlers for collapsible cards
-        const cards = container.querySelectorAll('.demo-card');
+        const cards = container.querySelectorAll('.demo__card');
         cards.forEach(card => {
           const h2 = card.querySelector('h2');
           if (h2) {
             h2.addEventListener('click', () => {
-              card.classList.toggle('expanded');
+              card.classList.toggle('demo__card--expanded');
             });
           }
         });
       } catch (err) {
-        container.innerHTML = `<div class="error">Failed to load demo: ${escapeHtml(err.message)}</div>`;
+        container.innerHTML = `<div class="demo__error">Failed to load demo: ${escapeHtml(err.message)}</div>`;
       }
     }
 
