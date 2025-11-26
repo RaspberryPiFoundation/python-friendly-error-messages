@@ -3,9 +3,9 @@
 - [ ] Ensure all strings in `src/` are localised
 - [ ] Consider renaming `explain()` to something like `friendlyExplain()`?
 - [ ] Figure out where the built packages should live / be served from
-  - [ ] Set up automated publishing through GitHub Actions
-- [ ] BEM-style formatting for CSS classes?
-- [ ] Open source?
+  - [ ] Set up automated testing and publishing through GitHub Actions
+- [ ] Improve (BEM-style) formatting for CSS classes
+- [ ] Open source
 
 A small, runtime-agnostic, library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
 
