@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Friendly Error Messages - Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Python Friendly Error Messages - Demo</h1>
+
+    <div id="demo-container" class="loading">
+      Loading demo...
+    </div>
+  </div>
+
+  <script type="module">
+    import { explain, loadCopydeck, registerAdapter, loadCopydeckFor, skulptAdapter, pyodideAdapter } from '../dist/index.browser.js';
+
+    // example traces with corresponding code
+    const examples = [
+      {
+        title: "NameError - Undefined Variable",
+        runtime: "skulpt",
+        code: `print("Hello")
+print(kittens)`,
+        trace: `Traceback (most recent call last):
+File "main.py", line 2, in <module>
+NameError: name 'kittens' is not defined`
+      },
+      {
+        title: "SyntaxError - Missing Colon",
+        runtime: "skulpt",
+        code: `for i in range(3)
+  print(i)`,
+        trace: `Traceback (most recent call last):
+File "main.py", line 1
+  for i in range(3)
+                    ^
+SyntaxError: invalid syntax`
+      },
+      {
+        title: "AttributeError - Using .push() on List",
+        runtime: "pyodide",
+        code: `items = []
+items.push(3)`,
+        trace: `Traceback (most recent call last):
+File "main.py", line 2, in <module>
+  items.push(3)
+AttributeError: 'list' object has no attribute 'push'`
+      },
+      {
+        title: "TypeError - Adding String and Number",
+        runtime: "pyodide",
+        code: `age = 10
+message = "I am " + age + " years old"`,
+        trace: `Traceback (most recent call last):
+File "main.py", line 2, in <module>
+  message = "I am " + age + " years old"
+TypeError: can only concatenate str (not "int") to str`
+      },
+      {
+        title: "NameError - Variable Used Before Assignment",
+        runtime: "skulpt",
+        code: `def calculate():
+  result = x + 5
+  x = 10
+  return result
+
+calculate()`,
+        trace: `Traceback (most recent call last):
+File "main.py", line 5, in <module>
+  calculate()
+File "main.py", line 2, in calculate
+UnboundLocalError: local variable 'x' referenced before assignment`
+      },
+      {
+        title: "IndexError - List Index Out of Range",
+        runtime: "pyodide",
+        code: `numbers = [1, 2, 3]
+print(numbers[5])`,
+        trace: `Traceback (most recent call last):
+File "main.py", line 2, in <module>
+  print(numbers[5])
+IndexError: list index out of range`
+      },
+      {
+        title: "KeyError - Dictionary Key Not Found",
+        runtime: "skulpt",
+        code: `person = {"name": "Alice", "age": 30}
+print(person["city"])`,
+        trace: `Traceback (most recent call last):
+File "main.py", line 2, in <module>
+  print(person["city"])
+KeyError: 'city'`
+      },
+      {
+        title: "ZeroDivisionError - Division by Zero",
+        runtime: "pyodide",
+        code: `result = 10 / 0
+print(result)`,
+        trace: `Traceback (most recent call last):
+File "main.py", line 1, in <module>
+  result = 10 / 0
+ZeroDivisionError: division by zero`
+      }
+    ];
+
+    async function initDemo() {
+      const container = document.getElementById('demo-container');
+
+      try {
+        await loadCopydeckFor('en');
+        registerAdapter('skulpt', skulptAdapter);
+        registerAdapter('pyodide', pyodideAdapter);
+
+        let html = '<div class="demo-grid">';
+
+        for (const example of examples) {
+          try {
+            const result = explain({
+              error: example.trace,
+              code: example.code,
+              audience: 'beginner',
+              verbosity: 'standard'
+            });
+
+            html += `
+                          <div class="demo-card">
+                              <h2>
+                                  ${example.title}
+                                  <span class="runtime-badge ${example.runtime}">${example.runtime}</span>
+                              </h2>
+                              
+                              <div class="demo-card-content">
+                                  <div class="trace-section">
+                                      <h3>Original Trace</h3>
+                                      <div class="trace-raw">${escapeHtml(example.trace)}</div>
+                                  </div>
+                                  
+                                  <div class="trace-section">
+                                      <h3>Code</h3>
+                                      <div class="code-example">${escapeHtml(example.code)}</div>
+                                  </div>
+                                  
+                                  <div class="explanation">
+                                      <h3>Friendly Explanation</h3>
+                                      ${result.html}
+                                  </div>
+                              </div>
+                          </div>
+                      `;
+          } catch (err) {
+            html += `
+                          <div class="demo-card">
+                              <h2>${example.title}</h2>
+                              <div class="error">Error processing: ${escapeHtml(err.message)}</div>
+                          </div>
+                      `;
+          }
+        }
+
+        html += '</div>';
+        container.innerHTML = html;
+
+        // click handlers for collapsible cards
+        const cards = container.querySelectorAll('.demo-card');
+        cards.forEach(card => {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            h2.addEventListener('click', () => {
+              card.classList.toggle('expanded');
+            });
+          }
+        });
+      } catch (err) {
+        container.innerHTML = `<div class="error">Failed to load demo: ${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    initDemo();
+  </script>
+</body>
+
+</html>

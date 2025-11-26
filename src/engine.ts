@@ -95,7 +95,7 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
       why ? `<div class="pfe-why">${why}</div>` : "",
       steps?.length ? `<ul class="pfe-steps">${steps.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
       patch ? `<pre class="pfe-patch">${escapeHtml(patch)}</pre>` : "",
-      `<details class="pfe-details"><summary>Details</summary><pre>${escapeHtml(
+      `<details class="pfe-details"><summary>Error details</summary><pre>${escapeHtml(
         (trace.type || "Error") + ": " + trace.message
       )}</pre></details>`
     ].filter(Boolean).join("\n");
