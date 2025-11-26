@@ -20,20 +20,17 @@ Each example shows:
 
 ## Usage
 
+(all commands should be run in the root directory of the project)
+
 1. Make sure the project is built:
    ```bash
    npm run build:all
    ```
 
-2. Open `index.html` in a web browser. You can:
-   - Simply open the file directly in your browser
-   - Or use a local web server (recommended) by executing the following command in the root directory of the project:
-     ```bash
-     # Using Python
-     python -m http.server 8000
-     
-     # Using NodeJS
-     npx http-server -p 8000
-     ```
-     Then navigate to `http://localhost:8000/demo/`
+2. Start up a local web server:
+   ```bash
+   npx http-server -p 8000
+   ```
+
+3. Navigate to `http://localhost:8000/demo/`
 

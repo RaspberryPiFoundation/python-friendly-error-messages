@@ -6,23 +6,23 @@ type InternalState = {
   adapters: Record<string, (raw: string, code?: string) => Trace | null>;
 };
 
-const S: InternalState = { adapters: {} };
+const state: InternalState = { adapters: {} };
 
-export const loadCopydeck = (deck: CopyDeck) => (S.copy = deck);
+export const loadCopydeck = (deck: CopyDeck) => (state.copy = deck);
 
 const getUiString = (key: keyof NonNullable<CopyDeck["ui"]>, fallback: string): string => {
-  return S.copy?.ui?.[key] || fallback;
+  return state.copy?.ui?.[key] || fallback;
 };
 
 export const registerAdapter = (name: string, fn: (raw: string, code?: string) => Trace | null) =>
-  (S.adapters[name] = fn);
+  (state.adapters[name] = fn);
 
 const coerceTrace = (input: string | Error | Trace, code?: string): Trace => {
   if ((input as Trace).raw !== undefined) return input as Trace;
   const raw = typeof input === "string" ? input : String((input as Error).stack || (input as Error).message || input);
   // try adapters in registration order
-  for (const key of Object.keys(S.adapters)) {
-    const t = S.adapters[key](raw, code);
+  for (const key of Object.keys(state.adapters)) {
+    const t = state.adapters[key](raw, code);
     if (t) return t;
   }
   // generic fallback
@@ -42,7 +42,7 @@ const coerceTrace = (input: string | Error | Trace, code?: string): Trace => {
 };
 
 const pickVariant = (trace: Trace, code: string | undefined, audience: string) => {
-  const deck = S.copy;
+  const deck = state.copy;
   const kind = trace.type && deck?.errors[trace.type] ? trace.type : "Other";
   const entry = deck?.errors[kind];
   if (!entry) return null;
@@ -78,7 +78,7 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
     const v = entry.variants[i];
     if (!matches(v)) continue;
 
-    const glob = S.copy?.glossary?.[audience] || undefined;
+    const glob = state.copy?.glossary?.[audience] || undefined;
     const title = applyGlossary(tmpl(v.title, vars), glob);
     const summary = applyGlossary(tmpl(v.summary, vars), glob);
     const why = v.why ? applyGlossary(tmpl(v.why, vars), glob) : undefined;
@@ -122,7 +122,7 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
 };
 
 export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
-  if (!S.copy) throw new Error("Copydeck not loaded");
+  if (!state.copy) throw new Error("Copydeck not loaded");
   const audience = opts.audience || "beginner";
   const verbosity = opts.verbosity || "standard";
   const code = opts.code;
