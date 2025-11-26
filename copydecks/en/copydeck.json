@@ -3,6 +3,18 @@
     "language": "en",
     "version": 1
   },
+  "ui": {
+    "line": "line",
+    "in": "in",
+    "thisFile": "this file",
+    "errorDetails": "Error details",
+    "error": "Error",
+    "copydeckNotLoaded": "Copydeck not loaded",
+    "pythonError": "Python error",
+    "fallbackSummary": "Start with the last line of the message and the highlighted code line.",
+    "fallbackWhy": "The last line of the traceback tells you the error type and main cause.",
+    "fallbackStep": "Fix one small thing and run again."
+  },
   "glossary": {
     "kid": {
       "variable": "name",

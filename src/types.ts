@@ -55,6 +55,18 @@ export type CopyDeck = {
   meta: { language: string; version: number };
   glossary?: Record<string, Record<string, string>>;
   errors: Record<string, { variants: CopyVariant[] }>;
+  ui?: {
+    line?: string;
+    in?: string;
+    thisFile?: string;
+    errorDetails?: string;
+    error?: string;
+    copydeckNotLoaded?: string;
+    pythonError?: string;
+    fallbackSummary?: string;
+    fallbackWhy?: string;
+    fallbackStep?: string;
+  };
 };
 
 export type AdapterFn = (raw: string, code?: string) => Trace | null;

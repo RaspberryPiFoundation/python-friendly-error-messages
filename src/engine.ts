@@ -10,6 +10,10 @@ const S: InternalState = { adapters: {} };
 
 export const loadCopydeck = (deck: CopyDeck) => (S.copy = deck);
 
+const getUiString = (key: keyof NonNullable<CopyDeck["ui"]>, fallback: string): string => {
+  return S.copy?.ui?.[key] || fallback;
+};
+
 export const registerAdapter = (name: string, fn: (raw: string, code?: string) => Trace | null) =>
   (S.adapters[name] = fn);
 
@@ -56,10 +60,13 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
     return true;
   };
 
+  const lineStr = getUiString("line", "line");
+  const inStr = getUiString("in", "in");
+  const thisFileStr = getUiString("thisFile", "this file");
   const loc =
-    trace.line && trace.file ? `line ${trace.line} in ${trace.file}` :
-    trace.line ? `line ${trace.line}` :
-    trace.file || "this file";
+    trace.line && trace.file ? `${lineStr} ${trace.line} ${inStr} ${trace.file}` :
+    trace.line ? `${lineStr} ${trace.line}` :
+    trace.file || thisFileStr;
 
   const vars = {
     loc,
@@ -95,8 +102,8 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
       why ? `<div class="pfem__why">${why}</div>` : "",
       steps?.length ? `<ul class="pfem__steps">${steps.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
       patch ? `<pre class="pfem__patch">${escapeHtml(patch)}</pre>` : "",
-      `<details class="pfem__details"><summary>Error details</summary><pre>${escapeHtml(
-        (trace.type || "Error") + ": " + trace.message
+      `<details class="pfem__details"><summary>${escapeHtml(getUiString("errorDetails", "Error details"))}</summary><pre>${escapeHtml(
+        (trace.type || getUiString("error", "Error")) + ": " + trace.message
       )}</pre></details>`
     ].filter(Boolean).join("\n");
 
@@ -131,15 +138,15 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
     return {
       trace,
       variantId: "Other/variants/0",
-      title: "Python error",
-      summary: "Start with the last line of the message and the highlighted code line.",
-      why: "The last line of the traceback tells you the error type and main cause.",
-      steps: ["Fix one small thing and run again."],
+      title: getUiString("pythonError", "Python error"),
+      summary: getUiString("fallbackSummary", "Start with the last line of the message and the highlighted code line."),
+      why: getUiString("fallbackWhy", "The last line of the traceback tells you the error type and main cause."),
+      steps: [getUiString("fallbackStep", "Fix one small thing and run again.")],
       html: undefined
     };
   }
 
-  // not convinced by this implementation, and may decide to drop the verbosity option...
+  // not convinced by this implementation, and may decide to drop the verbosity option entirely...
   if (verbosity === "brief") {
     chosen.why = undefined;
     chosen.steps = chosen.steps?.slice(0, 1);
