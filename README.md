@@ -45,8 +45,9 @@ const result = explain({
 
 // result.html is a ready-made snippet
 // or use result.title, result.summary, result.steps, result.patch, result.trace
-
 ```
+
+See the [demo](demo/README.md) for a full set of examples.
 
 ## Development
 
