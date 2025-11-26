@@ -114,7 +114,7 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
   return null;
 };
 
-export const explain = (opts: ExplainOptions): ExplainResult => {
+export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
   if (!S.copy) throw new Error("Copydeck not loaded");
   const audience = opts.audience || "beginner";
   const verbosity = opts.verbosity || "standard";

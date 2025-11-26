@@ -18,7 +18,7 @@
   </div>
 
   <script type="module">
-    import { explain, loadCopydeck, registerAdapter, loadCopydeckFor, skulptAdapter, pyodideAdapter } from '../dist/index.browser.js';
+    import { friendlyExplain, loadCopydeck, registerAdapter, loadCopydeckFor, skulptAdapter, pyodideAdapter } from '../dist/index.browser.js';
 
     // example traces with corresponding code
     const examples = [
@@ -121,7 +121,7 @@ ZeroDivisionError: division by zero`
 
         for (const example of examples) {
           try {
-            const result = explain({
+            const result = friendlyExplain({
               error: example.trace,
               code: example.code,
               audience: 'beginner',

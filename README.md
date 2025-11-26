@@ -1,10 +1,8 @@
 # Python Friendly Error Messages
 
 - [ ] Ensure all strings in `src/` are localised
-- [ ] Consider renaming `explain()` to something like `friendlyExplain()`?
 - [ ] Figure out where the built packages should live / be served from
   - [ ] Set up automated testing and publishing through GitHub Actions
-- [ ] Improve (BEM-style) formatting for CSS classes
 - [ ] Open source
 
 A small, runtime-agnostic, library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
@@ -26,7 +24,7 @@ import {
   registerAdapter,
   skulptAdapter,
   pyodideAdapter,
-  explain
+  friendlyExplain
 } from "python-friendly-error-messages";
 
 await loadCopydeckFor(navigator.language); // falls back to "en"
@@ -36,7 +34,7 @@ registerAdapter("skulpt", skulptAdapter);
 registerAdapter("pyodide", pyodideAdapter);
 
 // later, when you have an error string and some code:
-const result = explain({
+const result = friendlyExplain({
   error: rawTracebackString,
   code: editorCode,
   audience: "beginner",
