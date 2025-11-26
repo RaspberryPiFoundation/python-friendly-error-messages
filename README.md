@@ -1,9 +1,9 @@
 # Python Friendly Error Messages
 
-- [ ] Ensure all strings in `src/` are localised
-- [ ] Figure out where the built packages should live / be served from
-  - [ ] Set up automated testing and publishing through GitHub Actions
-- [ ] Open source
+Todo:
+- Figure out where the built packages should live / be served from
+  - Set up automated testing and publishing through GitHub Actions
+- Open source
 
 A small, runtime-agnostic, library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
 
