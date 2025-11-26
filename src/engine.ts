@@ -90,12 +90,12 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
     }
 
     const html = [
-      `<div class="pfe-title">${escapeHtml(title)}</div>`,
-      `<div class="pfe-summary">${summary}</div>`,
-      why ? `<div class="pfe-why">${why}</div>` : "",
-      steps?.length ? `<ul class="pfe-steps">${steps.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
-      patch ? `<pre class="pfe-patch">${escapeHtml(patch)}</pre>` : "",
-      `<details class="pfe-details"><summary>Error details</summary><pre>${escapeHtml(
+      `<div class="pfem__title">${escapeHtml(title)}</div>`,
+      `<div class="pfem__summary">${summary}</div>`,
+      why ? `<div class="pfem__why">${why}</div>` : "",
+      steps?.length ? `<ul class="pfem__steps">${steps.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
+      patch ? `<pre class="pfem__patch">${escapeHtml(patch)}</pre>` : "",
+      `<details class="pfem__details"><summary>Error details</summary><pre>${escapeHtml(
         (trace.type || "Error") + ": " + trace.message
       )}</pre></details>`
     ].filter(Boolean).join("\n");
