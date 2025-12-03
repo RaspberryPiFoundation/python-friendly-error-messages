@@ -27,17 +27,17 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        working-directory: demo
+        working-directory: docs
         run: npm ci
 
       - name: Prepare demo assets
-        working-directory: demo
+        working-directory: docs
         run: npm run prepare-demo
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: demo
+          path: docs
 
   deploy:
     runs-on: ubuntu-latest
