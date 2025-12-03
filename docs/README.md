@@ -1,4 +1,6 @@
-# Demo
+# Documentation
+
+## Demo
 
 This directory contains a demo HTML file that showcases the Python Friendly Error Messages library.
 

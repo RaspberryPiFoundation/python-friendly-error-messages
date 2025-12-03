@@ -44,7 +44,7 @@ const result = friendlyExplain({
 // or use result.title, result.summary, result.steps, result.patch, result.trace
 ```
 
-See the [demo](demo/README.md) for a full set of examples.
+See the [demo](docs/README.md) for a full set of examples.
 
 ## Development
 
