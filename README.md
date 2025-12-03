@@ -97,3 +97,9 @@ Output files will be in `dist/`.
 You can now import, and use it, elsewhere (see Usage notes).
 
 The package is published to: https://github.com/RaspberryPiFoundation/python-friendly-error-messages/pkgs/npm/python-friendly-error-messages
+
+### Publishing
+
+```bash
+npm publish
+```
