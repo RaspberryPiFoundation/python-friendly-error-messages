@@ -139,9 +139,9 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
       trace,
       variantId: "Other/variants/0",
       title: getUiString("pythonError", "Python error"),
-      summary: getUiString("fallbackSummary", "Start with the last line of the message and the highlighted code line."),
-      why: getUiString("fallbackWhy", "The last line of the traceback tells you the error type and main cause."),
-      steps: [getUiString("fallbackStep", "Fix one small thing and run again.")],
+      summary: getUiString("fallbackSummary", "Start with the last line of the trace (message) and the highlighted code line."),
+      why: getUiString("fallbackWhy", "The last line of the trace tells you the error type and main cause."),
+      steps: [getUiString("fallbackStep", "Try a fix and run again.")],
       html: undefined
     };
   }
