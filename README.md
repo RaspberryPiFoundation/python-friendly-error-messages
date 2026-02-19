@@ -2,6 +2,7 @@
 
 Todo:
 - Set up automated testing and publishing through GitHub Actions
+- Accessibility of output HTML
 
 A small, runtime-agnostic, library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
 
