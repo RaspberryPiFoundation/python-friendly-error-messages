@@ -17,7 +17,7 @@ It can be used in browser-based editors (like RPF's [Code Editor web component](
 
 ## Usage
 
-```
+```javascript
 import {
   loadCopydeckFor,
   registerAdapter,
