@@ -24,8 +24,11 @@
   <script type="module">
     import { examples } from './demo-examples.js';
 
+    const localHosts = new Set(['localhost', '127.0.0.1', '::1']);
+    const isLocalDevelopment = window.location.protocol === 'file:' || localHosts.has(window.location.hostname);
+
     const pageParams = new URLSearchParams(window.location.search);
-    const useLocal = pageParams.has('local');
+    const useLocal = isLocalDevelopment && pageParams.has('local');
     const navigationEntry = performance.getEntriesByType('navigation')[0];
     const isReload = navigationEntry && navigationEntry.type === 'reload';
     let cacheBust = pageParams.get('cb');
@@ -46,29 +49,36 @@
 
     async function initDemo() {
       const container = document.getElementById('demo-container');
+      const sourceBar = document.getElementById('source-bar');
 
-      const switchUrl = useLocal ? 'index.html' : 'index.html?local=true';
-      const bar = document.querySelector('#source-bar .container');
-      if (useLocal) {
-        bar.innerHTML = `
-          <span class="demo__source-active demo__source-active--local">&#9679; local build <code>dist/</code></span>
-          <a class="demo__source-switch" href="${switchUrl}">switch to vendored release</a>
-        `;
-      } else {
-        bar.innerHTML = `
-          <span class="demo__source-active demo__source-active--vendor">&#9679; vendored release</span>
-          <a class="demo__source-switch" href="${switchUrl}">switch to local build</a>
-        `;
+      if (!isLocalDevelopment) {
+        sourceBar.remove();
       }
 
-      const switchLink = bar.querySelector('.demo__source-switch');
-      if (switchLink) {
-        switchLink.addEventListener('click', (event) => {
-          event.preventDefault();
-          const target = new URL(switchLink.getAttribute('href'), window.location.href);
-          target.searchParams.set('cb', String(Date.now()));
-          window.location.assign(target.toString());
-        });
+      if (isLocalDevelopment) {
+        const switchUrl = useLocal ? 'index.html' : 'index.html?local=true';
+        const bar = document.querySelector('#source-bar .container');
+        if (useLocal) {
+          bar.innerHTML = `
+            <span class="demo__source-active demo__source-active--local">&#9679; local build <code>dist/</code></span>
+            <a class="demo__source-switch" href="${switchUrl}">switch to vendored release</a>
+          `;
+        } else {
+          bar.innerHTML = `
+            <span class="demo__source-active demo__source-active--vendor">&#9679; vendored release</span>
+            <a class="demo__source-switch" href="${switchUrl}">switch to local build</a>
+          `;
+        }
+
+        const switchLink = bar.querySelector('.demo__source-switch');
+        if (switchLink) {
+          switchLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            const target = new URL(switchLink.getAttribute('href'), window.location.href);
+            target.searchParams.set('cb', String(Date.now()));
+            window.location.assign(target.toString());
+          });
+        }
       }
 
       try {
