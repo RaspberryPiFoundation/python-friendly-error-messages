@@ -21,7 +21,6 @@ export type ExplainOptions = {
   error: string | Error | Trace;
   code?: string;
   audience?: "kid" | "beginner" | "intermediate";
-  verbosity?: "brief" | "standard" | "guided";
   locale?: string;
 };
 

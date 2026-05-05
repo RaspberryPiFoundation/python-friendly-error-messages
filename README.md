@@ -36,8 +36,7 @@ registerAdapter("pyodide", pyodideAdapter);
 const result = friendlyExplain({
   error: rawTracebackString,
   code: editorCode,
-  audience: "beginner",
-  verbosity: "guided"
+  audience: "beginner"
 });
 
 // result.html is a ready-made snippet

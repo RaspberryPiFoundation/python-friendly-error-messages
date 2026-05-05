@@ -123,7 +123,6 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
 export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
   if (!state.copy) throw new Error("Copydeck not loaded");
   const audience = opts.audience || "beginner";
-  const verbosity = opts.verbosity || "standard";
   const code = opts.code;
 
   const trace = coerceTrace(opts.error, code);
@@ -143,12 +142,6 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
       steps: [getUiString("fallbackStep", "Try a fix and run again.")],
       html: undefined
     };
-  }
-
-  // not convinced by this implementation, and may decide to drop the verbosity option entirely...
-  if (verbosity === "brief") {
-    chosen.why = undefined;
-    chosen.steps = chosen.steps?.slice(0, 1);
   }
 
   return { trace, ...chosen };
