@@ -53,7 +53,6 @@ export type CopyVariant = {
 
 export type CopyDeck = {
   meta: { language: string; version: number };
-  glossary?: Record<string, Record<string, string>>;
   errors: Record<string, { variants: CopyVariant[] }>;
   ui?: {
     line?: string;

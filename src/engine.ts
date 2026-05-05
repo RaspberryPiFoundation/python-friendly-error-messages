@@ -1,5 +1,5 @@
 import type { CopyDeck, ExplainOptions, ExplainResult, Trace } from "./types";
-import { applyGlossary, escapeHtml, safeRegexTest, tmpl } from "./utils";
+import { escapeHtml, safeRegexTest, tmpl } from "./utils";
 
 type InternalState = {
   copy?: CopyDeck;
@@ -78,11 +78,10 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
     const v = entry.variants[i];
     if (!matches(v)) continue;
 
-    const glob = state.copy?.glossary?.[audience] || undefined;
-    const title = applyGlossary(tmpl(v.title, vars), glob);
-    const summary = applyGlossary(tmpl(v.summary, vars), glob);
-    const why = v.why ? applyGlossary(tmpl(v.why, vars), glob) : undefined;
-    const steps = v.steps?.map((s) => applyGlossary(tmpl(s, vars), glob));
+    const title = tmpl(v.title, vars);
+    const summary = tmpl(v.summary, vars);
+    const why = v.why ? tmpl(v.why, vars) : undefined;
+    const steps = v.steps?.map((s) => tmpl(s, vars));
     const badges = v.badges;
 
     let patch: string | undefined = undefined;

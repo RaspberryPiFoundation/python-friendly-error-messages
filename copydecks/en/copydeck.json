@@ -15,22 +15,16 @@
     "fallbackWhy": "The last line of the trace tells you the error type and main cause.",
     "fallbackStep": "Try a fix and run again."
   },
-  "glossary": {
-    "kid": {
-      "variable": "name",
-      "function": "recipe",
-      "object": "thing"
-    }
-  },
   "errors": {
     "NameError": {
       "variants": [
         {
-          "title": "This name doesn't exist yet",
-          "summary": "Your code uses \"{{name}}\", but it hasn't been created yet. Check {{loc}}. If you meant the text <i>{{name}}</i>, put it in double quotes.",
-          "why": "Python needs to see a line that creates \"{{name}}\" before you use it.",
+          "title": "This variable doesn't exist yet",
+          "summary": "Your code uses the variable \"{{name}}\", but it hasn't been created yet. Check {{loc}}. If you meant to print the text <i>{{name}}</i>, put it in double quotes.",
+          "why": "Without speech marks Python treats <i>{{name}}</i> as a variable, and this variable does not exist yet.",
           "steps": [
-            "Make it first (for example: {{name}} = 0).",
+            "If it is meant to be text put speech marks around {{name}}.",
+            "If it is meant to be a variable make it first (for example: {{name}} = 0).",
             "Check spelling and capital letters."
           ]
         },
@@ -38,9 +32,9 @@
           "if": {
             "match_message": ["is not defined"]
           },
-          "title": "This name doesn't exist here",
+          "title": "This variable doesn't exist here",
           "summary": "\"{{name}}\" might be created somewhere else, but you're using it at {{loc}}. If you meant the text <i>{{name}}</i>, put it in double quotes.",
-          "why": "A name created in another place might not be available here.",
+          "why": "A variable created in another place might not be available here.",
           "steps": [
             "Move the line that makes it to above where you use it.",
             "Or set it here just before you use it."
@@ -52,12 +46,11 @@
     "UnboundLocalError": {
       "variants": [
         {
-          "title": "Used before it gets a value in this part of the code",
+          "title": "Variable used before it gets a value in this part of the code",
           "summary": "Here, \"{{name}}\" is used at {{loc}} before you give it a value.",
-          "why": "Because you assign to this name in this part, Python treats it as local here. It is read before you set it.",
+          "why": "You have used the variable before it has been given a value. If used within a subroutine, the variable must either be global and given a value outside the subroutine definition, or local and given a value inside the subroutine, before it is used. ",
           "steps": [
-            "Give it a value first (add a line like {{name}} = ... before you use it).",
-            "If you meant a different value, use a different name here."
+            "Give it a value first (add a line like {{name}} = ... before you use it)."
           ]
         }
       ]
@@ -71,8 +64,8 @@
             "not_code": [":\\s*$"]
           },
           "title": "Missing colon (:) at the end",
-          "summary": "This line starts a block and needs a colon at {{loc}}: {{codeLine}}",
-          "why": "In Python, lines that start a block must end with a colon.",
+          "summary": "There is a colon (:) missing at the end of a line. Check {{loc}}: {{codeLine}}",
+          "why": "In Python constructs like if statements, for loops and while loops must have a colon at the end of their first line.",
           "steps": [
             "Add a colon (:) at the end of that line."
           ]
@@ -107,12 +100,12 @@
     "TypeError": {
       "variants": [
         {
-          "title": "These values don't work together",
-          "summary": "You're combining different kinds of values (for example, a number and a word).",
-          "why": "Operators like + only work with certain kinds together.",
+          "title": "These data types don't work together",
+          "summary": "You're joining (concatenating) different kinds of data types. For example, a number (integer or float) and a word (string).",
+          "why": "When using + to join text and variables together the variable must have a string data type.",
           "steps": [
-            "Change a value to the right kind: int(\"3\") or str(7).",
-            "Use an operator that works with these values."
+            "Cast the variable as a string data type.",
+            "Change the variable to the right kind: int(\"3\") or str(7)."
           ]
         }
       ]
@@ -148,12 +141,12 @@
     "IndexError": {
       "variants": [
         {
-          "title": "That position is outside the list",
-          "summary": "You're asking for a list position that isn't there.",
-          "why": "List positions start at 0 and stop before the list's length.",
+          "title": "This index position does not exist",
+          "summary": "You are trying to use an index position that does not exist. The list is not that long.",
+          "why": "In this list: myList[\"A\", \"B\", \"C\"] \"A\" has the index position 0, \"B\" has the index position 1 and \"C\" has the index position 2. Index position 3 does not exist.",
           "steps": [
             "Check the length with len(the_list).",
-            "Use a position number smaller than len(the_list)."
+            "Use an index position number smaller than len(the_list)."
           ]
         }
       ]
@@ -167,7 +160,20 @@
           "why": "The dictionary has no value for that key.",
           "steps": [
             "Check the exact key (spelling and capital letters).",
-            "If it might be missing, use dictionary.get(key, default) or add the key first."
+            "It might be missing, use dictionary.get(key, default) or add the key."
+          ]
+        }
+      ]
+    },
+
+    "ZeroDivisionError": {
+      "variants": [
+        {
+          "title": "You can't divide by zero",
+          "summary": "You are trying to divide a number by zero, which is not possible.",
+          "why": "In mathematics, division by zero is undefined.",
+          "steps": [
+            "Change the calculation so that you are not dividing a number by 0."
           ]
         }
       ]
