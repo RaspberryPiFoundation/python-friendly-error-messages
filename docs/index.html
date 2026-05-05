@@ -15,10 +15,10 @@
   </div>
   <div class="container">
     <h1>Python Friendly Error Messages - Demo</h1>
+  </div>
 
-    <div id="demo-container">
-      Loading demo...
-    </div>
+  <div id="demo-container" class="demo__table-page">
+    Loading demo...
   </div>
 
   <script type="module">
@@ -67,60 +67,68 @@
         registerAdapter('skulpt', skulptAdapter);
         registerAdapter('pyodide', pyodideAdapter);
 
-        let html = '<div class="demo__grid">';
-
-        for (const example of examples) {
+        const processedExamples = examples.map((example) => {
           try {
             const result = friendlyExplain({
               error: example.trace,
               code: example.code
             });
 
-            html += `
-              <div class="demo__card">
-                <h2>
-                  ${example.title}
-                  <span class="demo__badge demo__badge--${example.runtime}">${example.runtime}</span>
-                </h2>
-                <div class="demo__card-content">
-                  <div class="demo__trace-section">
-                    <h3>Original Trace</h3>
-                    <div class="demo__trace-raw">${escapeHtml(example.trace)}</div>
-                  </div>
-                  <div class="demo__trace-section">
-                    <h3>Original Code</h3>
-                    <div class="demo__code-example">${escapeHtml(example.code)}</div>
-                  </div>
-                  <div class="demo__explanation">
-                    <h3>Friendly Explanation</h3>
-                    ${result.html}
-                  </div>
-                </div>
-              </div>
-            `;
+            return {
+              example,
+              result,
+              error: null
+            };
           } catch (err) {
-            html += `
-              <div class="demo__card">
-                <h2>${example.title}</h2>
-                <div class="demo__error">Error processing: ${escapeHtml(err.message)}</div>
-              </div>
-            `;
-          }
-        }
-
-        html += '</div>';
-        container.innerHTML = html;
-
-        // click handlers for collapsible cards
-        const cards = container.querySelectorAll('.demo__card');
-        cards.forEach(card => {
-          const h2 = card.querySelector('h2');
-          if (h2) {
-            h2.addEventListener('click', () => {
-              card.classList.toggle('demo__card--expanded');
-            });
+            return {
+              example,
+              result: null,
+              error: err
+            };
           }
         });
+
+        const tableRowsHtml = processedExamples.map(({ example, result, error }, index) => {
+          const rowId = getRowId(example.title, index);
+          const explanationCell = error
+            ? `<div class="demo__error demo__error--inline">Error processing: ${escapeHtml(error.message)}</div>`
+            : result.html;
+
+          return `
+            <tr id="${rowId}">
+              <td>
+                <a class="demo__row-link" href="#${rowId}" aria-label="Link to row ${index + 1}">${index + 1}</a>
+              </td>
+              <td>${escapeHtml(example.title)}</td>
+              <td><span class="demo__badge demo__badge--${example.runtime}">${example.runtime}</span></td>
+              <td><div class="demo__mono">${escapeHtml(example.code)}</div></td>
+              <td><div class="demo__mono demo__mono--trace">${escapeHtml(example.trace)}</div></td>
+              <td><div class="demo__table-explanation">${explanationCell}</div></td>
+            </tr>
+          `;
+        }).join('');
+
+        container.innerHTML = `
+          <section class="demo__table-section demo__table-section--full">
+            <div class="demo__table-wrap">
+              <table class="demo__table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Runtime</th>
+                    <th>Code</th>
+                    <th>Trace</th>
+                    <th>Friendly Explanation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${tableRowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        `;
       } catch (err) {
         container.innerHTML = `<div class="demo__error">Failed to load demo: ${escapeHtml(err.message)}</div>`;
       }
@@ -130,6 +138,14 @@
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
+    }
+
+    function getRowId(title, index) {
+      const slug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      return `example-${index + 1}-${slug}`;
     }
 
     initDemo();

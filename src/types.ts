@@ -56,7 +56,7 @@ export type CopyDeck = {
     line?: string;
     in?: string;
     thisFile?: string;
-    errorDetails?: string;
+    originalError?: string;
     error?: string;
     copydeckNotLoaded?: string;
     pythonError?: string;

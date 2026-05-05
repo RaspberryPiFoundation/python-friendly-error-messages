@@ -101,7 +101,7 @@ const pickVariant = (trace: Trace, code: string | undefined) => {
       why ? `<div class="pfem__why">${why}</div>` : "",
       steps?.length ? `<ul class="pfem__steps">${steps.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
       patch ? `<pre class="pfem__patch">${escapeHtml(patch)}</pre>` : "",
-      `<details class="pfem__details"><summary>${escapeHtml(getUiString("errorDetails", "Error details"))}</summary><pre>${escapeHtml(
+      `<details class="pfem__details"><summary>${escapeHtml(getUiString("originalError", "Original error"))}</summary><pre>${escapeHtml(
         (trace.type || getUiString("error", "Error")) + ": " + trace.message
       )}</pre></details>`
     ].filter(Boolean).join("\n");

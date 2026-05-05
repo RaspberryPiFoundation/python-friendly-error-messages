@@ -7,7 +7,7 @@
     "line": "line",
     "in": "in",
     "thisFile": "this file",
-    "errorDetails": "Error details",
+    "originalError": "Original error",
     "error": "Error",
     "copydeckNotLoaded": "Copydeck not loaded",
     "pythonError": "Python error",

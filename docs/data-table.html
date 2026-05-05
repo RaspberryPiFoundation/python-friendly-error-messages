@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Friendly Error Messages - Demo Data</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .demo-data__toolbar {
+      margin: 1rem 0 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .demo-data__toolbar a {
+      color: #1565c0;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .demo-data__count {
+      color: #5f6c7b;
+      font-size: 0.95rem;
+    }
+
+    .demo-data__table-wrap {
+      overflow-x: auto;
+      background: #fff;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-data__table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 56rem;
+    }
+
+    .demo-data__table th,
+    .demo-data__table td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.75rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .demo-data__table th {
+      background: #f8f9fa;
+      color: #2c3e50;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
+    }
+
+    .demo-data__table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .demo-data__mono {
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.45;
+    }
+
+    .demo-data__runtime {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .demo-data__runtime--skulpt {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .demo-data__runtime--pyodide {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Demo Data Table</h1>
+
+    <div class="demo-data__toolbar">
+      <a href="index.html">Open demo view</a>
+      <span class="demo-data__count" id="row-count">Loading rows...</span>
+    </div>
+
+    <div class="demo-data__table-wrap">
+      <table class="demo-data__table" id="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Runtime</th>
+            <th>Code</th>
+            <th>Trace</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="5">Loading data...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    import { examples } from './demo-examples.js';
+
+    const tableBody = document.querySelector('#data-table tbody');
+    const rowCount = document.querySelector('#row-count');
+
+    rowCount.textContent = `${examples.length} rows`;
+    tableBody.innerHTML = examples.map((example, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${escapeHtml(example.title)}</td>
+        <td>
+          <span class="demo-data__runtime demo-data__runtime--${escapeHtml(example.runtime)}">
+            ${escapeHtml(example.runtime)}
+          </span>
+        </td>
+        <td><div class="demo-data__mono">${escapeHtml(example.code)}</div></td>
+        <td><div class="demo-data__mono">${escapeHtml(example.trace)}</div></td>
+      </tr>
+    `).join('');
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+
+</html>
