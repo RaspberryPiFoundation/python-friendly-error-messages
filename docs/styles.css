@@ -28,9 +28,13 @@ h1 {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
   font-family: monospace;
-  display: flex;
+  display: none;
   align-items: center;
   margin-bottom: 1.5rem;
+}
+
+.demo--local-dev .demo__source-bar {
+  display: flex;
 }
 
 .demo__source-bar .container {

@@ -5,6 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Python Friendly Error Messages - Demo</title>
+  <script>
+    (() => {
+      const localHosts = new Set(['localhost', '127.0.0.1', '::1']);
+      const isLocalDevelopment = window.location.protocol === 'file:' || localHosts.has(window.location.hostname);
+      window.__PFEM_IS_LOCAL_DEVELOPMENT__ = isLocalDevelopment;
+      if (isLocalDevelopment) {
+        document.documentElement.classList.add('demo--local-dev');
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -24,8 +34,7 @@
   <script type="module">
     import { examples } from './demo-examples.js';
 
-    const localHosts = new Set(['localhost', '127.0.0.1', '::1']);
-    const isLocalDevelopment = window.location.protocol === 'file:' || localHosts.has(window.location.hostname);
+    const isLocalDevelopment = Boolean(window.__PFEM_IS_LOCAL_DEVELOPMENT__);
 
     const pageParams = new URLSearchParams(window.location.search);
     const useLocal = isLocalDevelopment && pageParams.has('local');
