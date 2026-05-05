@@ -41,8 +41,7 @@ Then in the root directory of the project:
    npx http-server -p 8000
    ```
 
-2. Navigate to `http://localhost:8000/docs/local-demo.html`
-
+2. Navigate to `http://localhost:8000/docs`
 
 ## Local demo
 
@@ -55,6 +54,8 @@ The `local-demo.html` file in this directory is a copy of the hosted demo that c
 1. Make sure the project is built:
    ```bash
    npm run build:all
+   # or for continuous watching:
+   npm run dev:build
    ```
 
 2. Start up a local web server:

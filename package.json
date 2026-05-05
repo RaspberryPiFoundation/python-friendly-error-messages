@@ -25,6 +25,7 @@
     "build:browser": "esbuild src/index.browser.ts --bundle --format=esm --outfile=dist/index.browser.js --loader:.json=json",
     "build:assets": "mkdir -p dist/copydecks && cp -R copydecks/* dist/copydecks/",
     "build:all": "npm run build && npm run build:browser && npm run build:assets",
+    "dev:build": "npm run build:assets && tsc -p tsconfig.json --watch & esbuild src/index.browser.ts --bundle --format=esm --outfile=dist/index.browser.js --loader:.json=json --watch",
     "test": "vitest run",
     "dev:test": "vitest"
   },
