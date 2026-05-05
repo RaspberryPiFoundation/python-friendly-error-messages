@@ -48,43 +48,17 @@ See the [demo](docs/README.md) for a full set of examples.
 
 ## Development
 
-### Prerequisites
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
 
-- **asdf** for environment management  
-- **Node.js** (installed via asdf)  
-- **npm** (bundled with Node)
-
-### Set up
-
-Follow the guide at [asdf-vm.com](https://asdf-vm.com/).
-
-Then install the Node.js plugin:
+In brief:
 
 ```bash
-asdf plugin add nodejs
-asdf install
-```
-
-This will read `.tool-versions` and install the appropriate version of Node.js automatically.
-
-```
 npm install
 npm run build -- --watch
-```
-
-### Tests
-
-```
 npm test
 ```
 
-To continuously watch for file changes:
-
-```
-npm run dev:test
-```
-
-### Building
+## Building
 
 Create a clean build for distribution:
 
@@ -98,7 +72,7 @@ You can now import, and use it, elsewhere (see Usage notes).
 
 The package is published to: https://github.com/RaspberryPiFoundation/python-friendly-error-messages/pkgs/npm/python-friendly-error-messages
 
-### Publishing
+## Publishing
 
 ```bash
 npm publish
