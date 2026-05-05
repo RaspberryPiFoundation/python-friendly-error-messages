@@ -72,7 +72,7 @@
         },
         {
           "title": "The line is incomplete or mismatched",
-          "summary": "Something is missing or extra — like a colon, bracket, or quote.",
+          "summary": "Something is missing or extra - like a colon, bracket, or quote.",
           "why": "If (), [], {}, :, or quotes don't match, Python can't read the line.",
           "steps": [
             "Make (), [], and {} come in matching pairs.",
