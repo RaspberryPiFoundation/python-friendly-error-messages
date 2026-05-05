@@ -35,8 +35,7 @@ registerAdapter("pyodide", pyodideAdapter);
 // later, when you have an error string and some code:
 const result = friendlyExplain({
   error: rawTracebackString,
-  code: editorCode,
-  audience: "beginner"
+  code: editorCode
 });
 
 // result.html is a ready-made snippet

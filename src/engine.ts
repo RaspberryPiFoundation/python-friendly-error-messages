@@ -41,7 +41,7 @@ const coerceTrace = (input: string | Error | Trace, code?: string): Trace => {
   return t;
 };
 
-const pickVariant = (trace: Trace, code: string | undefined, audience: string) => {
+const pickVariant = (trace: Trace, code: string | undefined) => {
   const deck = state.copy;
   const kind = trace.type && deck?.errors[trace.type] ? trace.type : "Other";
   const entry = deck?.errors[kind];
@@ -122,7 +122,6 @@ const pickVariant = (trace: Trace, code: string | undefined, audience: string) =
 
 export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
   if (!state.copy) throw new Error("Copydeck not loaded");
-  const audience = opts.audience || "beginner";
   const code = opts.code;
 
   const trace = coerceTrace(opts.error, code);
@@ -131,7 +130,7 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
     trace.codeLine = lines[trace.line - 1]?.trim();
   }
 
-  const chosen = pickVariant(trace, code, audience);
+  const chosen = pickVariant(trace, code);
   if (!chosen) {
     return {
       trace,

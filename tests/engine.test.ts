@@ -69,7 +69,7 @@ describe("engine", () => {
     const raw = `Traceback (most recent call last):
   File "main.py", line 2, in <module>
 NameError: name 'kittens' is not defined`;
-    const res = friendlyExplain({ error: raw, code, audience: "beginner" });
+    const res = friendlyExplain({ error: raw, code });
     expect(res.trace.type).toBe("NameError");
     expect(res.title).toMatch(/name/i);
     expect(res.summary).toMatch(/kittens/);
