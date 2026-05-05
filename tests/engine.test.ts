@@ -4,7 +4,6 @@ import { skulptAdapter } from "../src/adapters/skulpt";
 
 const copydeck = {
   meta: { language: "en", version: 1 },
-  glossary: { kid: { variable: "name", function: "recipe", object: "thing" } },
   errors: {
     NameError: {
       variants: [
