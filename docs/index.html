@@ -11,13 +11,13 @@
 <body>
   <div class="demo__source-bar" id="source-bar">
     <div class="container">
+      Loading source info...
     </div>
   </div>
-  <div class="container">
-    <h1>Python Friendly Error Messages - Demo</h1>
-  </div>
 
-  <div id="demo-container" class="demo__table-page">
+  <h1>Python Friendly Error Messages - Demo</h1>
+
+  <div class="demo__table-page" id="demo-container">
     Loading demo...
   </div>
 
@@ -26,7 +26,16 @@
 
     const pageParams = new URLSearchParams(window.location.search);
     const useLocal = pageParams.has('local');
-    const cacheBust = pageParams.get('cb');
+    const navigationEntry = performance.getEntriesByType('navigation')[0];
+    const isReload = navigationEntry && navigationEntry.type === 'reload';
+    let cacheBust = pageParams.get('cb');
+
+    if (isReload) {
+      cacheBust = String(Date.now());
+      pageParams.set('cb', cacheBust);
+      const nextUrl = `${window.location.pathname}?${pageParams.toString()}${window.location.hash}`;
+      window.history.replaceState(null, '', nextUrl);
+    }
 
     const libPathBase = useLocal
       ? '../dist/index.browser.js'
@@ -38,7 +47,7 @@
     async function initDemo() {
       const container = document.getElementById('demo-container');
 
-      const switchUrl = useLocal ? 'index.html' : 'index.html?local';
+      const switchUrl = useLocal ? 'index.html' : 'index.html?local=true';
       const bar = document.querySelector('#source-bar .container');
       if (useLocal) {
         bar.innerHTML = `
