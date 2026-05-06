@@ -69,7 +69,7 @@ describe("engine", () => {
     const raw = `Traceback (most recent call last):
   File "main.py", line 2, in <module>
 NameError: name 'kittens' is not defined`;
-    const res = friendlyExplain({ error: raw, code });
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
     expect(res.trace.type).toBe("NameError");
     expect(res.title).toMatch(/name/i);
     expect(res.summary).toMatch(/kittens/);
@@ -82,7 +82,7 @@ NameError: name 'kittens' is not defined`;
     const raw = `Traceback (most recent call last):
   File "main.py", line 1
 SyntaxError: invalid syntax`;
-    const res = friendlyExplain({ error: raw, code });
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
     expect(res.trace.type).toBe("SyntaxError");
     expect(res.title).toMatch(/colon/i);
     expect(res.patch).toMatch(/:\s*$/);
@@ -93,7 +93,7 @@ SyntaxError: invalid syntax`;
     const raw = `Traceback (most recent call last):
   File "main.py", line 2
 AttributeError: 'list' object has no attribute 'push'`;
-    const res = friendlyExplain({ error: raw, code });
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
     expect(res.trace.type).toBe("AttributeError");
     expect(res.patch).toContain(".append(");
   });

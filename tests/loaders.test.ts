@@ -25,7 +25,10 @@ describe("loadCopydeckFor", () => {
     await loadCopydeckFor("en-GB");
     registerAdapter("skulpt", skulptAdapter);
 
-    const res = friendlyExplain({ error: "TypeError: bad", code: "" });
+    const res = friendlyExplain({
+      error: { type: "TypeError", message: "bad", raw: "TypeError: bad", runtime: "unknown" },
+      code: ""
+    });
     expect(res.title).toBe("Python error");
     expect((globalThis.fetch as any).mock.calls[0][0]).toMatch(/copydecks\/en-GB\/copydeck\.json/);
     expect((globalThis.fetch as any).mock.calls[1][0]).toMatch(/copydecks\/en\/copydeck\.json/);
@@ -41,7 +44,10 @@ describe("loadCopydeckFor", () => {
   it("still supports manual loadCopydeck for tests without fetch", () => {
     loadCopydeck(minimalDeck as any);
     registerAdapter("skulpt", skulptAdapter);
-    const res = friendlyExplain({ error: "NameError: name 'x' is not defined", code: "" });
+    const res = friendlyExplain({
+      error: { type: "NameError", message: "name 'x' is not defined", raw: "NameError: name 'x' is not defined", runtime: "unknown" },
+      code: ""
+    });
     expect(res.title).toBe("Python error");
   });
 });

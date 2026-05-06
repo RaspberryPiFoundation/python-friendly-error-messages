@@ -17,28 +17,24 @@ const getUiString = (key: keyof NonNullable<CopyDeck["ui"]>, fallback: string): 
 export const registerAdapter = (name: string, fn: (raw: string, code?: string) => Trace | null) =>
   (state.adapters[name] = fn);
 
-const coerceTrace = (input: string | Error | Trace, code?: string): Trace => {
+const coerceTrace = (input: string | Error | Trace, code?: string, runtime?: string): Trace => {
   if ((input as Trace).raw !== undefined) return input as Trace;
+
+  if (!runtime) {
+    throw new Error("Runtime is required when error is a string or Error. Pass opts.runtime or parse with an adapter first.");
+  }
+
+  const adapter = state.adapters[runtime];
+  if (!adapter) {
+    throw new Error(`No adapter registered for runtime \"${runtime}\".`);
+  }
+
   const raw = typeof input === "string" ? input : String((input as Error).stack || (input as Error).message || input);
-  // try adapters in registration order
-  for (const key of Object.keys(state.adapters)) {
-    const t = state.adapters[key](raw, code);
-    if (t) return t;
+  const parsed = adapter(raw, code);
+  if (!parsed) {
+    throw new Error(`Could not parse error for runtime \"${runtime}\".`);
   }
-  // generic fallback
-  const lines = raw.trim().split(/\r?\n/).filter(Boolean);
-  const tail = lines[lines.length - 1] || "";
-  const m = tail.match(/^(\w+Error)\s*:\s*(.*)$/);
-  const t: Trace = {
-    type: m ? m[1] : null,
-    message: m ? m[2] : tail,
-    raw,
-    runtime: "unknown"
-  };
-  if (code) {
-    t.codeLine = code.split(/\r?\n/)[(t.line || 1) - 1]?.trim();
-  }
-  return t;
+  return parsed;
 };
 
 const pickVariant = (trace: Trace, code: string | undefined) => {
@@ -124,7 +120,7 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
   if (!state.copy) throw new Error("Copydeck not loaded");
   const code = opts.code;
 
-  const trace = coerceTrace(opts.error, code);
+  const trace = coerceTrace(opts.error, code, opts.runtime);
   if (code && trace.line && !trace.codeLine) {
     const lines = code.split(/\r?\n/);
     trace.codeLine = lines[trace.line - 1]?.trim();

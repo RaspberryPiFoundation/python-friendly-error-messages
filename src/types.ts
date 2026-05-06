@@ -21,6 +21,7 @@ export type ExplainOptions = {
   error: string | Error | Trace;
   code?: string;
   locale?: string;
+  runtime?: string;
 };
 
 export type ExplainResult = {

@@ -4,7 +4,7 @@ Todo:
 - Set up automated testing and publishing through GitHub Actions
 - Accessibility of output HTML
 
-A small, runtime-agnostic, library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
+A small, Pyodide and Skulpt-focused, library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
 
 It can be used in browser-based editors (like RPF's [Code Editor web component](https://github.com/RaspberryPiFoundation/editor-ui)) or any environment that executes Python code through Skulpt or Pyodide.
 
@@ -35,7 +35,8 @@ registerAdapter("pyodide", pyodideAdapter);
 // later, when you have an error string and some code:
 const result = friendlyExplain({
   error: rawTracebackString,
-  code: editorCode
+  code: editorCode,
+  runtime: "skulpt" // or "pyodide", matching the adapter/runtime that produced the traceback
 });
 
 // result.html is a ready-made snippet

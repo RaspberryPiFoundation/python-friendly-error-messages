@@ -54,7 +54,7 @@
       : './vendor/python-friendly-error-messages/index.browser.js';
     const libPath = cacheBust ? `${libPathBase}?cb=${encodeURIComponent(cacheBust)}` : libPathBase;
 
-    const { friendlyExplain, loadCopydeck, registerAdapter, loadCopydeckFor, skulptAdapter, pyodideAdapter } = await import(libPath);
+    const { friendlyExplain, loadCopydeckFor, skulptAdapter, pyodideAdapter } = await import(libPath);
 
     async function initDemo() {
       const container = document.getElementById('demo-container');
@@ -92,13 +92,25 @@
 
       try {
         await loadCopydeckFor('en');
-        registerAdapter('skulpt', skulptAdapter);
-        registerAdapter('pyodide', pyodideAdapter);
+
+        const adaptersByRuntime = {
+          skulpt: skulptAdapter,
+          pyodide: pyodideAdapter
+        };
 
         const processedExamples = examples.map((example) => {
           try {
+            const runtimeAdapter = adaptersByRuntime[example.runtime];
+            if (!runtimeAdapter) {
+              throw new Error(`No adapter configured for runtime \"${example.runtime}\".`);
+            }
+            const parsedTrace = runtimeAdapter(example.trace, example.code);
+            if (!parsedTrace) {
+              throw new Error(`Could not parse trace for runtime \"${example.runtime}\".`);
+            }
+
             const result = friendlyExplain({
-              error: example.trace,
+              error: parsedTrace,
               code: example.code
             });
 
