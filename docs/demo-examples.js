@@ -3,14 +3,22 @@ export const examples = [
     title: "NameError - Variable Not Created Yet",
     runtime: "skulpt",
     expectedVariantId: "NameError/variants/0",
-    code: `def show_total():
-  print(total)
+    code: `def outer():
+  def inner():
+    return total
 
-show_total()`,
+  print(inner())
+  total = 10
+
+outer()`,
     trace: `Traceback (most recent call last):
-File "main.py", line 4, in <module>
-File "main.py", line 2, in show_total
-NameError: free variable 'total' referenced before assignment in enclosing scope`
+File "main.py", line 8, in <module>
+  outer()
+File "main.py", line 5, in outer
+  print(inner())
+File "main.py", line 3, in inner
+  return total
+NameError: cannot access free variable 'total' where it is not associated with a value in enclosing scope`
   },
   {
     title: "NameError - Variable Not Defined Here",
