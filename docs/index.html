@@ -169,6 +169,9 @@
             </div>
           </section>
         `;
+
+        applyHashTarget();
+        window.addEventListener('hashchange', applyHashTarget);
       } catch (err) {
         container.innerHTML = `<div class="demo__error">Failed to load demo: ${escapeHtml(err.message)}</div>`;
       }
@@ -186,6 +189,24 @@
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
       return `example-${index + 1}-${slug}`;
+    }
+
+    function applyHashTarget() {
+      document.querySelectorAll('.demo__row-target').forEach((el) => {
+        el.classList.remove('demo__row-target');
+      });
+
+      const hash = window.location.hash;
+      if (!hash || hash.length <= 1) return;
+
+      const targetId = decodeURIComponent(hash.slice(1));
+      const targetRow = document.getElementById(targetId);
+      if (!targetRow) return;
+
+      targetRow.classList.add('demo__row-target');
+      requestAnimationFrame(() => {
+        targetRow.scrollIntoView({ block: 'center', behavior: 'auto' });
+      });
     }
 
     initDemo();

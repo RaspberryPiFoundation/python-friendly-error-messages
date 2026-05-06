@@ -231,6 +231,12 @@ h1 {
   background: #fff8eb;
 }
 
+.demo__table tbody tr.demo__row-target {
+  outline: 2px solid #c98a2e;
+  outline-offset: -2px;
+  background: #fff8eb;
+}
+
 .demo__row-link {
   color: #8a5a00;
   text-decoration: underline;
