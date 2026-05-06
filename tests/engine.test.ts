@@ -88,6 +88,16 @@ SyntaxError: invalid syntax`;
     expect(res.patch).toMatch(/:\s*$/);
   });
 
+  it("replaces trailing comma with colon for block SyntaxError patch", () => {
+    const code = `if score > 10,\n  print("Great")`;
+    const raw = `Traceback (most recent call last):
+  File "main.py", line 1
+SyntaxError: invalid syntax`;
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
+    expect(res.trace.type).toBe("SyntaxError");
+    expect(res.patch).toBe("if score > 10:");
+  });
+
   it("handles AttributeError .push -> .append", () => {
     const code = `items = []\nitems.push(3)`;
     const raw = `Traceback (most recent call last):

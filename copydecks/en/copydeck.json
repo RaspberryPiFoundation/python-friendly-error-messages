@@ -19,6 +19,9 @@
     "NameError": {
       "variants": [
         {
+          "if": {
+            "not_message": ["is not defined"]
+          },
           "title": "This variable doesn't exist yet",
           "summary": "Your code uses the variable \"{{name}}\", but it hasn't been created yet. Check {{loc}}. If you meant to print the text <i>{{name}}</i>, put it in double quotes.",
           "why": "Without speech marks Python treats <i>{{name}}</i> as a variable, and this variable does not exist yet.",
@@ -61,13 +64,126 @@
         {
           "if": {
             "match_code": ["^(\\s*)(if|for|while|def|class|elif|else|try|except|with)\\b"],
-            "not_code": [":\\s*$"]
+            "not_code": [":\\s*$", ",\\s*$"]
           },
           "title": "Missing colon (:) at the end",
           "summary": "There is a colon (:) missing at the end of a line. Check {{loc}}: {{codeLine}}",
           "why": "In Python constructs like if statements, for loops and while loops must have a colon at the end of their first line.",
           "steps": [
             "Add a colon (:) at the end of that line."
+          ]
+        },
+        {
+          "if": {
+            "match_code": ["^(\\s*)(if|for|while|def|class|elif|else|try|except|with)\\b.*?,\\s*$"]
+          },
+          "title": "Comma used where a colon is needed",
+          "summary": "This line ends with a comma, but this kind of Python line should end with a colon (:). Check {{loc}}: {{codeLine}}",
+          "why": "Lines that start a block (like if or for) need a colon, not a comma.",
+          "steps": [
+            "Replace the comma with a colon (:)."
+          ]
+        },
+        {
+          "if": {
+            "match_code": ["^(\\s*)(if|for|while|def|class|elif|else|try|except|with)\\b.*::\\s*$"]
+          },
+          "title": "Too many colons at the end",
+          "summary": "This line ends with more than one colon. Check {{loc}}: {{codeLine}}",
+          "why": "A block-starting line needs exactly one colon at the end.",
+          "steps": [
+            "Leave only one colon (:) at the end of the line."
+          ]
+        },
+        {
+          "if": {
+            "match_message": ["was never closed"]
+          },
+          "title": "A bracket or parenthesis was not closed",
+          "summary": "One of your brackets, braces, or parentheses is open but never closes.",
+          "why": "Python needs every opening symbol like (, [ or { to have a matching closing symbol.",
+          "steps": [
+            "Find the opening symbol that has no matching closing symbol.",
+            "Add the missing closing symbol.",
+            "Check nearby lines as the opening symbol may be earlier."
+          ]
+        },
+        {
+          "if": {
+            "match_message": ["does not match", "closing parenthesis", "closing bracket", "closing brace"]
+          },
+          "title": "Closing bracket does not match the opening one",
+          "summary": "A closing symbol was used, but it does not match the opening symbol.",
+          "why": "Each opening symbol must be closed by the same kind: () [] or {}.",
+          "steps": [
+            "Find the opening symbol first.",
+            "Change the closing symbol so it matches.",
+            "Check that symbols are in the correct order."
+          ]
+        },
+        {
+          "if": {
+            "match_message": ["unterminated string literal", "EOL while scanning string literal"]
+          },
+          "title": "A string was started but not finished",
+          "summary": "A string opens with a quote mark but does not close.",
+          "why": "Text in Python must have matching opening and closing quotes.",
+          "steps": [
+            "Find the string that starts but does not end.",
+            "Add the missing quote mark.",
+            "Use matching quote marks around the text."
+          ]
+        },
+        {
+          "if": {
+            "match_message": ["perhaps you forgot a comma"]
+          },
+          "title": "A comma is missing between items",
+          "summary": "Python expected a comma between values, but did not find one.",
+          "why": "Lists, dictionaries, tuples, and function arguments need commas to separate each item.",
+          "steps": [
+            "Check where two values are next to each other.",
+            "Add a comma between each separate item.",
+            "Run the code again to check for the next issue."
+          ]
+        },
+        {
+          "if": {
+            "match_message": ["cannot assign to"],
+            "match_code": ["^(\\s*)(if|elif|while)\\b.*="],
+            "not_code": ["==", "<=", ">=", "!="]
+          },
+          "title": "Assignment used instead of comparison",
+          "summary": "This condition uses =, but conditions must compare values. Check {{loc}}: {{codeLine}}",
+          "why": "In conditions, = sets a value, but == compares values.",
+          "steps": [
+            "Use == to compare values in if, elif, or while conditions.",
+            "Keep = for setting a variable value outside comparisons."
+          ]
+        },
+        {
+          "if": {
+            "match_message": ["unexpected EOF while parsing", "incomplete input"]
+          },
+          "title": "Python reached the end before the code was complete",
+          "summary": "Python got to the end of the file, but something was still unfinished.",
+          "why": "A line or block was started but not completed, such as a bracket, quote, or block body.",
+          "steps": [
+            "Check the final lines of your code first.",
+            "Look for missing closing brackets, quotes, or colons.",
+            "Make sure every started block has code inside it."
+          ]
+        },
+        {
+          "if": {
+            "match_code": ["\\+\\+|--"]
+          },
+          "title": "This operator is not valid in Python",
+          "summary": "This line contains ++ or --, which Python does not use.",
+          "why": "Python does not have increment/decrement operators like some other languages.",
+          "steps": [
+            "Use += 1 to increase a value by one.",
+            "Use -= 1 to decrease a value by one."
           ]
         },
         {

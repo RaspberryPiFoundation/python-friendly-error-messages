@@ -86,7 +86,10 @@ const pickVariant = (trace: Trace, code: string | undefined) => {
     } else if (trace.type === "NameError" && trace.name) {
       patch = `${trace.name} = 0\n${codeLine}`;
     } else if (trace.type === "SyntaxError" && /^(if|for|while|def|class|elif|else|try|except|with)\b/i.test(codeLine) && !/:$/.test(codeLine.trim())) {
-      patch = codeLine.replace(/\s*$/, "") + ":";
+      const trimmedCodeLine = codeLine.replace(/\s*$/, "");
+      patch = /,\s*$/.test(trimmedCodeLine)
+        ? trimmedCodeLine.replace(/,\s*$/, ":")
+        : trimmedCodeLine + ":";
     } else if (trace.type === "TypeError" && /\+\s*[A-Za-z_][A-Za-z0-9_]*/.test(codeLine)) {
       patch = codeLine.replace(/\+\s*([A-Za-z_][A-Za-z0-9_]*)/, "+ str($1)");
     }
