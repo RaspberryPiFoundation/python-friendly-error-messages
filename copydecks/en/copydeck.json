@@ -26,8 +26,8 @@
           "summary": "Your code uses the variable \"{{name}}\", but it hasn't been created yet. Check {{loc}}. If you meant to print the text <i>{{name}}</i>, put it in double quotes.",
           "why": "Without speech marks Python treats <i>{{name}}</i> as a variable, and this variable does not exist yet.",
           "steps": [
-            "If it is meant to be text put speech marks around {{name}}.",
-            "If it is meant to be a variable make it first (for example: {{name}} = 0).",
+            "If it is meant to be text, put speech marks around {{name}}.",
+            "If it is meant to be a variable, make it first (for example: {{name}} = 0).",
             "Check spelling and capital letters."
           ]
         },
