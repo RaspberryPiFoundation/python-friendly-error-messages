@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anatomy of a Friendly Error Message</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="anatomy">
+    <a class="anatomy__back" href="index.html">← Demo</a>
+
+    <header class="anatomy__header">
+      <h1>Anatomy of a Friendly Error Message</h1>
+    </header>
+
+    <div class="anatomy__main">
+
+      <div class="anatomy__left">
+        <!-- Traceback that triggered the error -->
+        <div class="anatomy__context">
+          <span class="anatomy__context-label">Error / Trace:</span>
+          <div class="anatomy__context-code">
+            <div>Traceback (most recent call last):</div>
+            <div>&nbsp;&nbsp;File "main.py", line 2, in &lt;module&gt;</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;print("Hello, " + nme)</div>
+            <div>NameError: name 'nme' is not defined</div>
+          </div>
+        </div>
+
+        <div class="anatomy__card">
+
+          <!-- Stage 1: Title + Summary -->
+          <div class="anatomy__zone" data-zone="1">
+            <div class="anatomy__zone-head">
+              <div class="anatomy__zone-badge">1</div>
+              <div class="anatomy__zone-tag">Explain &amp; Suggest - Title &amp; Summary</div>
+            </div>
+            <div class="anatomy__zone-body">
+              <div class="pfem__title">This variable doesn't exist yet</div>
+              <div class="pfem__summary">Your code uses the variable "<em>nme</em>", but it hasn't been created yet.
+                Check line 2. If you meant to print the text <em>nme</em>, put it in double quotes.</div>
+            </div>
+          </div>
+
+          <!-- Stage 2: Why -->
+          <div class="anatomy__zone" data-zone="2">
+            <div class="anatomy__zone-head">
+              <div class="anatomy__zone-badge">2</div>
+              <div class="anatomy__zone-tag">Hint &amp; Direct - Why it happened</div>
+            </div>
+            <div class="anatomy__zone-body">
+              <div class="pfem__why">Without speech marks Python treats <em>nme</em> as a variable, and this variable
+                does not exist yet.</div>
+            </div>
+          </div>
+
+          <!-- Stage 3: Steps -->
+          <div class="anatomy__zone" data-zone="3">
+            <div class="anatomy__zone-head">
+              <div class="anatomy__zone-badge">3</div>
+              <div class="anatomy__zone-tag">Hint &amp; Direct - What to do</div>
+            </div>
+            <div class="anatomy__zone-body">
+              <ul class="pfem__steps">
+                <li>If it is meant to be text, put speech marks around <em>nme</em>.</li>
+                <li>If it is meant to be a variable, make it first (for example: <code>nme = 0</code>).</li>
+                <li>Check spelling and capital letters.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Stage 4: Patch -->
+          <div class="anatomy__zone" data-zone="4">
+            <div class="anatomy__zone-head">
+              <div class="anatomy__zone-badge">4</div>
+              <div class="anatomy__zone-tag">Solve - Suggested fix</div>
+            </div>
+            <div class="anatomy__zone-body">
+              <pre class="pfem__patch">nme = 0
+print("Hello, " + nme)</pre>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="anatomy__right">
+        <!-- Stage description -->
+        <div class="anatomy__desc">
+          <div class="anatomy__desc-panel" data-zone="1">
+            <div class="anatomy__desc-title">Step 1 - Explain &amp; Suggest</div>
+            <div class="anatomy__desc-text">Explain the error in plain English and why the code can't run. Use
+              highlighting to draw attention to the relevant line. Suggest which aspect the learner should review - a
+              typo, a missing definition, a syntax issue - <em>posed as a suggestion</em>, not a directive.</div>
+          </div>
+          <div class="anatomy__desc-panel" data-zone="2">
+            <div class="anatomy__desc-title">Step 2a - Hint &amp; Direct (hint)</div>
+            <div class="anatomy__desc-text">Provide more specific detail about <strong>why</strong> the error happens.
+              Give the learner something concrete to reason about before directing them to act.</div>
+          </div>
+          <div class="anatomy__desc-panel" data-zone="3">
+            <div class="anatomy__desc-title">Step 2b - Hint &amp; Direct (direct)</div>
+            <div class="anatomy__desc-text">Direct the learner - don't suggest. Tell them exactly what to change:
+              <em>"You need to change X at line Y."</em> Be specific and action-oriented.
+            </div>
+          </div>
+          <div class="anatomy__desc-panel" data-zone="4">
+            <div class="anatomy__desc-title">Step 3 - Solve</div>
+            <div class="anatomy__desc-text">Provide a working <strong>solution</strong> with a brief explanation of what
+              it corrects and why. A last resort - enough to unblock without handing the answer over too early.</div>
+          </div>
+        </div>
+
+        <div class="anatomy__controls">
+          <button type="button" class="anatomy__btn anatomy__btn--primary" id="reveal-btn">Next stage
+            &rarr;</button>
+          <button type="button" class="anatomy__btn anatomy__btn--secondary" id="show-all-btn">Show all stages</button>
+          <button type="button" class="anatomy__btn anatomy__btn--ghost" id="reset-btn">Reset</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const TOTAL = 4;
+    let revealed = 1;
+
+    const zones = [...document.querySelectorAll('.anatomy__zone')];
+    const descPanels = [...document.querySelectorAll('.anatomy__desc-panel')];
+    const revealBtn = document.getElementById('reveal-btn');
+    const showAllBtn = document.getElementById('show-all-btn');
+    const resetBtn = document.getElementById('reset-btn');
+
+    function update(next, animate = false) {
+      revealed = Math.max(1, Math.min(TOTAL, next));
+
+      zones.forEach((z, i) => {
+        const n = i + 1;
+        const wasRevealed = z.classList.contains('is-revealed');
+        z.classList.toggle('is-revealed', n <= revealed);
+        if (animate && n <= revealed && !wasRevealed) {
+          z.classList.add('just-revealed');
+          z.addEventListener('animationend', () => z.classList.remove('just-revealed'), { once: true });
+        }
+      });
+
+      descPanels.forEach((p) => {
+        p.classList.toggle('is-active', parseInt(p.dataset.zone) === revealed);
+      });
+
+      revealBtn.disabled = revealed >= TOTAL;
+      revealBtn.textContent = revealed >= TOTAL ? 'All stages revealed' : 'Next stage →';
+      showAllBtn.disabled = revealed >= TOTAL;
+    }
+
+    revealBtn.addEventListener('click', () => update(revealed + 1, true));
+    showAllBtn.addEventListener('click', () => update(TOTAL, true));
+    resetBtn.addEventListener('click', () => update(1));
+
+    update(1);
+  </script>
+</body>
+
+</html>
