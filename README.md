@@ -74,5 +74,6 @@ The package is published to: https://github.com/RaspberryPiFoundation/python-fri
 ## Publishing
 
 ```bash
+npm login
 npm publish
 ```

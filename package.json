@@ -15,9 +15,6 @@
     "dist",
     "copydecks"
   ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
