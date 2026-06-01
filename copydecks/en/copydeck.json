@@ -3,6 +3,25 @@
     "language": "en",
     "version": 1
   },
+
+  "glossary": {
+    "about": "Tokens written as {{token_name}} are filled in automatically at render time with real values from the Python error. You may move them to suit your language's word order, but do not translate, rename, or remove them. No HTML is needed around them as styling is applied automatically. Keys starting with _ are metadata for translators - do not translate or modify them.",
+    "tokens": {
+      "name": {
+        "description": "The Python variable or identifier that caused the error.",
+        "example": "score"
+      },
+      "loc": {
+        "description": "The line number and filename where the error occurred.",
+        "example": "line 5 in main.py"
+      },
+      "codeLine": {
+        "description": "The exact source code line that caused the error.",
+        "example": "for i in range(3)"
+      }
+    }
+  },
+
   "ui": {
     "line": "line",
     "in": "in",
@@ -29,7 +48,11 @@
             "If it is meant to be text, put speech marks around {{name}}.",
             "If it is meant to be a variable, make it first (for example: {{name}} = 0).",
             "Check spelling and capital letters."
-          ]
+          ],
+          "_placeholders": {
+            "name": "The undefined variable name, e.g. kittens",
+            "loc": "Where it was used, e.g. line 2 in main.py"
+          }
         },
         {
           "if": {
@@ -41,7 +64,11 @@
           "steps": [
             "Move the line that makes it to above where you use it.",
             "Or set it here just before you use it."
-          ]
+          ],
+          "_placeholders": {
+            "name": "The variable name used out of scope, e.g. total",
+            "loc": "Where it was referenced, e.g. line 8 in main.py"
+          }
         }
       ]
     },
@@ -54,7 +81,11 @@
           "why": "You have used the variable before it has been given a value. If used within a subroutine, the variable must either be global and given a value outside the subroutine definition, or local and given a value inside the subroutine, before it is used. ",
           "steps": [
             "Give it a value first (add a line like {{name}} = ... before you use it)."
-          ]
+          ],
+          "_placeholders": {
+            "name": "The variable used before assignment, e.g. score",
+            "loc": "Where it was read before being set, e.g. line 4 in main.py"
+          }
         }
       ]
     },
@@ -71,7 +102,11 @@
           "why": "In Python constructs like if statements, for loops and while loops must have a colon at the end of their first line.",
           "steps": [
             "Add a colon (:) at the end of that line."
-          ]
+          ],
+          "_placeholders": {
+            "loc": "Where the missing colon is, e.g. line 3 in main.py",
+            "codeLine": "The line that needs the colon, e.g. for i in range(10)"
+          }
         },
         {
           "if": {
@@ -82,7 +117,11 @@
           "why": "Lines that start a block (like if or for) need a colon, not a comma.",
           "steps": [
             "Replace the comma with a colon (:)."
-          ]
+          ],
+          "_placeholders": {
+            "loc": "Where the comma is, e.g. line 1 in main.py",
+            "codeLine": "The line ending with a comma, e.g. if score > 10,"
+          }
         },
         {
           "if": {
@@ -93,7 +132,11 @@
           "why": "A block-starting line needs exactly one colon at the end.",
           "steps": [
             "Leave only one colon (:) at the end of the line."
-          ]
+          ],
+          "_placeholders": {
+            "loc": "Where the extra colon is, e.g. line 2 in main.py",
+            "codeLine": "The line with double colons, e.g. if x > 0::"
+          }
         },
         {
           "if": {
@@ -159,7 +202,11 @@
           "steps": [
             "Use == to compare values in if, elif, or while conditions.",
             "Keep = for setting a variable value outside comparisons."
-          ]
+          ],
+          "_placeholders": {
+            "loc": "Where the = is used in a condition, e.g. line 6 in main.py",
+            "codeLine": "The condition line, e.g. if score = 10:"
+          }
         },
         {
           "if": {
@@ -208,7 +255,10 @@
           "steps": [
             "Use 4 spaces per level (not tabs).",
             "Line up all lines in the block."
-          ]
+          ],
+          "_placeholders": {
+            "loc": "Where the indentation problem is, e.g. line 7 in main.py"
+          }
         }
       ]
     },
