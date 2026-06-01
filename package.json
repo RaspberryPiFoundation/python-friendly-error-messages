@@ -1,6 +1,6 @@
 {
   "name": "@raspberrypifoundation/python-friendly-error-messages",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
