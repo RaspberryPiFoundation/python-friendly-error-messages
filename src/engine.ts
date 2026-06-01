@@ -70,15 +70,32 @@ const pickVariant = (trace: Trace, code: string | undefined) => {
     codeLine: codeLine
   };
 
+  const linePart = trace.line ? `<span class="pfem__line">${escapeHtml(lineStr)} ${escapeHtml(String(trace.line))}</span>` : null;
+  const filePart = trace.file ? `<span class="pfem__file">${escapeHtml(trace.file)}</span>` : null;
+  const htmlLoc =
+    linePart && filePart ? `${linePart} ${escapeHtml(inStr)} ${filePart}` :
+    linePart ?? filePart ?? escapeHtml(thisFileStr);
+
+  const htmlTransforms: Record<string, (v: string) => string> = {
+    name:     (v) => `<span class="pfem__var">${escapeHtml(v)}</span>`,
+    loc:      (_) => htmlLoc,
+    codeLine: (v) => `<span class="pfem__code">${escapeHtml(v)}</span>`,
+  };
+
   for (let i = 0; i < entry.variants.length; i++) {
     const v = entry.variants[i];
     if (!matches(v)) continue;
 
-    const title = tmpl(v.title, vars);
+    const title   = tmpl(v.title,   vars);
     const summary = tmpl(v.summary, vars);
-    const why = v.why ? tmpl(v.why, vars) : undefined;
-    const steps = v.steps?.map((s) => tmpl(s, vars));
-    const badges = v.badges;
+    const why     = v.why ? tmpl(v.why, vars) : undefined;
+    const steps   = v.steps?.map((s) => tmpl(s, vars));
+    const badges  = v.badges;
+
+    const titleHtml   = tmpl(v.title,   vars, htmlTransforms);
+    const summaryHtml = tmpl(v.summary, vars, htmlTransforms);
+    const whyHtml     = v.why ? tmpl(v.why, vars, htmlTransforms) : undefined;
+    const stepsHtml   = v.steps?.map((s) => tmpl(s, vars, htmlTransforms));
 
     let patch: string | undefined = undefined;
     if (trace.type === "AttributeError" && /\.push\s*\(/i.test(codeLine)) {
@@ -95,10 +112,10 @@ const pickVariant = (trace: Trace, code: string | undefined) => {
     }
 
     const html = [
-      `<div class="pfem__title">${escapeHtml(title)}</div>`,
-      `<div class="pfem__summary">${summary}</div>`,
-      why ? `<div class="pfem__why">${why}</div>` : "",
-      steps?.length ? `<ul class="pfem__steps">${steps.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
+      `<div class="pfem__title">${titleHtml}</div>`,
+      `<div class="pfem__summary">${summaryHtml}</div>`,
+      whyHtml ? `<div class="pfem__why">${whyHtml}</div>` : "",
+      stepsHtml?.length ? `<ul class="pfem__steps">${stepsHtml.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
       patch ? `<pre class="pfem__patch">${escapeHtml(patch)}</pre>` : "",
       `<details class="pfem__details"><summary>${escapeHtml(getUiString("originalError", "Original error"))}</summary><pre>${escapeHtml(
         (trace.type || getUiString("error", "Error")) + ": " + trace.message

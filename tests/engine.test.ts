@@ -107,4 +107,44 @@ AttributeError: 'list' object has no attribute 'push'`;
     expect(res.trace.type).toBe("AttributeError");
     expect(res.patch).toContain(".append(");
   });
+
+  it("plain result fields contain no HTML tags", () => {
+    const code = `print("Hello")\nprint(kittens)\n`;
+    const raw = `Traceback (most recent call last):
+  File "main.py", line 2, in <module>
+NameError: name 'kittens' is not defined`;
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
+    expect(res.summary).not.toMatch(/<[^>]+>/);
+    expect(res.why).not.toMatch(/<[^>]+>/);
+    res.steps?.forEach((s) => expect(s).not.toMatch(/<[^>]+>/));
+  });
+
+  it("html output wraps {{name}} in pfem__var span", () => {
+    const code = `print("Hello")\nprint(kittens)\n`;
+    const raw = `Traceback (most recent call last):
+  File "main.py", line 2, in <module>
+NameError: name 'kittens' is not defined`;
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
+    expect(res.html).toContain('<span class="pfem__var">kittens</span>');
+  });
+
+  it("html output wraps {{loc}} line and file in separate spans", () => {
+    const code = `print("Hello")\nprint(kittens)\n`;
+    const raw = `Traceback (most recent call last):
+  File "main.py", line 2, in <module>
+NameError: name 'kittens' is not defined`;
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
+    expect(res.html).toContain('<span class="pfem__line">');
+    expect(res.html).toContain('<span class="pfem__file">main.py</span>');
+  });
+
+  it("escapes HTML in codeLine within html output", () => {
+    const code = `for i in range(3)<script>alert(1)</script>\n  print(i)`;
+    const raw = `Traceback (most recent call last):
+  File "main.py", line 1
+SyntaxError: invalid syntax`;
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
+    expect(res.html).not.toContain("<script>");
+    expect(res.html).toContain("&lt;script&gt;");
+  });
 });
