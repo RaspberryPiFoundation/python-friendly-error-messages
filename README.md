@@ -41,6 +41,14 @@ const result = friendlyExplain({
 
 // result.html is a ready-made snippet
 // or use result.title, result.summary, result.steps, result.patch, result.trace
+
+// optionally limit which sections appear in result.html:
+const result = friendlyExplain({
+  error: rawTracebackString,
+  code: editorCode,
+  runtime: "skulpt",
+  sections: ["title", "summary"] // "why", "steps", "patch", "details" also available
+});
 ```
 
 See the [demo](docs/README.md) for a full set of examples.

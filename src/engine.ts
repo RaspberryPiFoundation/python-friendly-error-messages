@@ -1,4 +1,4 @@
-import type { CopyDeck, ExplainOptions, ExplainResult, Trace } from "./types";
+import type { CopyDeck, ExplainOptions, ExplainResult, Section, Trace } from "./types";
 import { escapeHtml, safeRegexTest, tmpl } from "./utils";
 
 type InternalState = {
@@ -37,7 +37,7 @@ const coerceTrace = (input: string | Error | Trace, code?: string, runtime?: str
   return parsed;
 };
 
-const pickVariant = (trace: Trace, code: string | undefined) => {
+const pickVariant = (trace: Trace, code: string | undefined, sections?: Section[]) => {
   const deck = state.copy;
   const kind = trace.type && deck?.errors[trace.type] ? trace.type : "Other";
   const entry = deck?.errors[kind];
@@ -111,15 +111,16 @@ const pickVariant = (trace: Trace, code: string | undefined) => {
       patch = codeLine.replace(/\+\s*([A-Za-z_][A-Za-z0-9_]*)/, "+ str($1)");
     }
 
+    const has = (s: Section) => !sections || sections.includes(s);
     const html = [
-      `<div class="pfem__title">${titleHtml}</div>`,
-      `<div class="pfem__summary">${summaryHtml}</div>`,
-      whyHtml ? `<div class="pfem__why">${whyHtml}</div>` : "",
-      stepsHtml?.length ? `<ul class="pfem__steps">${stepsHtml.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
-      patch ? `<pre class="pfem__patch">${escapeHtml(patch)}</pre>` : "",
-      `<details class="pfem__details"><summary>${escapeHtml(getUiString("originalError", "Original error"))}</summary><pre>${escapeHtml(
+      has("title")   ? `<div class="pfem__title">${titleHtml}</div>` : "",
+      has("summary") ? `<div class="pfem__summary">${summaryHtml}</div>` : "",
+      has("why")     && whyHtml ? `<div class="pfem__why">${whyHtml}</div>` : "",
+      has("steps")   && stepsHtml?.length ? `<ul class="pfem__steps">${stepsHtml.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
+      has("patch")   && patch ? `<pre class="pfem__patch">${escapeHtml(patch)}</pre>` : "",
+      has("details") ? `<details class="pfem__details"><summary>${escapeHtml(getUiString("originalError", "Original error"))}</summary><pre>${escapeHtml(
         (trace.type || getUiString("error", "Error")) + ": " + trace.message
-      )}</pre></details>`
+      )}</pre></details>` : "",
     ].filter(Boolean).join("\n");
 
     return {
@@ -146,7 +147,7 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
     trace.codeLine = lines[trace.line - 1]?.trim();
   }
 
-  const chosen = pickVariant(trace, code);
+  const chosen = pickVariant(trace, code, opts.sections);
   if (!chosen) {
     return {
       trace,

@@ -17,11 +17,14 @@ export type Trace = {
   version?: string;
 };
 
+export type Section = "title" | "summary" | "why" | "steps" | "patch" | "details";
+
 export type ExplainOptions = {
   error: string | Error | Trace;
   code?: string;
   locale?: string;
   runtime?: string;
+  sections?: Section[];
 };
 
 export type ExplainResult = {

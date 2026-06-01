@@ -138,6 +138,19 @@ NameError: name 'kittens' is not defined`;
     expect(res.html).toContain('<span class="pfem__file">main.py</span>');
   });
 
+  it("sections option limits html output to specified sections", () => {
+    const code = `print("Hello")\nprint(kittens)\n`;
+    const raw = `Traceback (most recent call last):
+  File "main.py", line 2, in <module>
+NameError: name 'kittens' is not defined`;
+    const res = friendlyExplain({ error: raw, code, runtime: "skulpt", sections: ["title", "summary"] });
+    expect(res.html).toContain("pfem__title");
+    expect(res.html).toContain("pfem__summary");
+    expect(res.html).not.toContain("pfem__why");
+    expect(res.html).not.toContain("pfem__steps");
+    expect(res.html).not.toContain("pfem__details");
+  });
+
   it("escapes HTML in codeLine within html output", () => {
     const code = `for i in range(3)<script>alert(1)</script>\n  print(i)`;
     const raw = `Traceback (most recent call last):
