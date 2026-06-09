@@ -31,6 +31,22 @@ File "main.py", line 2, in <module>
 NameError: name 'kittens' is not defined`
   },
   {
+    title: "NameError - Variable Used Before Assignment",
+    runtime: "skulpt",
+    expectedVariantId: "UnboundLocalError/variants/0",
+    code: `def calculate():
+  result = x + 5
+  x = 10
+  return result
+
+calculate()`,
+    trace: `Traceback (most recent call last):
+File "main.py", line 5, in <module>
+  calculate()
+File "main.py", line 2, in calculate
+UnboundLocalError: local variable 'x' referenced before assignment`
+  },
+  {
     title: "SyntaxError - Missing Colon",
     runtime: "skulpt",
     expectedVariantId: "SyntaxError/variants/0",
@@ -67,28 +83,6 @@ File "main.py", line 1
 SyntaxError: invalid syntax`
   },
   {
-    title: "SyntaxError - Unterminated String",
-    runtime: "pyodide",
-    expectedVariantId: "SyntaxError/variants/5",
-    code: `print("Hello`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  print("Hello
-        ^
-SyntaxError: unterminated string literal (detected at line 1)`
-  },
-  {
-    title: "SyntaxError - Missing Comma",
-    runtime: "pyodide",
-    expectedVariantId: "SyntaxError/variants/6",
-    code: `numbers = [1 2, 3]`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  numbers = [1 2, 3]
-             ^
-SyntaxError: invalid syntax. Perhaps you forgot a comma?`
-  },
-  {
     title: "SyntaxError - Bracket Not Closed",
     runtime: "pyodide",
     expectedVariantId: "SyntaxError/variants/3",
@@ -110,6 +104,28 @@ File "main.py", line 1
   values = [1, 2, 3)
                     ^
 SyntaxError: closing parenthesis ')' does not match opening bracket '['`
+  },
+  {
+    title: "SyntaxError - Unterminated String",
+    runtime: "pyodide",
+    expectedVariantId: "SyntaxError/variants/5",
+    code: `print("Hello`,
+    trace: `Traceback (most recent call last):
+File "main.py", line 1
+  print("Hello
+        ^
+SyntaxError: unterminated string literal (detected at line 1)`
+  },
+  {
+    title: "SyntaxError - Missing Comma",
+    runtime: "pyodide",
+    expectedVariantId: "SyntaxError/variants/6",
+    code: `numbers = [1 2, 3]`,
+    trace: `Traceback (most recent call last):
+File "main.py", line 1
+  numbers = [1 2, 3]
+             ^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?`
   },
   {
     title: "SyntaxError - Assignment In Condition",
@@ -170,6 +186,17 @@ File "main.py", line 2
 IndentationError: unexpected indent`
   },
   {
+    title: "TypeError - Adding String and Number",
+    runtime: "pyodide",
+    expectedVariantId: "TypeError/variants/0",
+    code: `age = 10
+message = "I am " + age + " years old"`,
+    trace: `Traceback (most recent call last):
+File "main.py", line 2, in <module>
+  message = "I am " + age + " years old"
+TypeError: can only concatenate str (not "int") to str`
+  },
+  {
     title: "AttributeError - Using .push() on List",
     runtime: "pyodide",
     expectedVariantId: "AttributeError/variants/0",
@@ -190,33 +217,6 @@ name.shrink()`,
 File "main.py", line 2, in <module>
   name.shrink()
 AttributeError: 'str' object has no attribute 'shrink'`
-  },
-  {
-    title: "TypeError - Adding String and Number",
-    runtime: "pyodide",
-    expectedVariantId: "TypeError/variants/0",
-    code: `age = 10
-message = "I am " + age + " years old"`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 2, in <module>
-  message = "I am " + age + " years old"
-TypeError: can only concatenate str (not "int") to str`
-  },
-  {
-    title: "NameError - Variable Used Before Assignment",
-    runtime: "skulpt",
-    expectedVariantId: "UnboundLocalError/variants/0",
-    code: `def calculate():
-  result = x + 5
-  x = 10
-  return result
-
-calculate()`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 5, in <module>
-  calculate()
-File "main.py", line 2, in calculate
-UnboundLocalError: local variable 'x' referenced before assignment`
   },
   {
     title: "IndexError - List Index Out of Range",
