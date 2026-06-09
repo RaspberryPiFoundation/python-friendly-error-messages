@@ -140,7 +140,7 @@
         },
         {
           "if": {
-            "match_message": ["was never closed"]
+            "match_message": ["was never closed", "EOF in multi-line"]
           },
           "title": "A bracket or parenthesis was not closed",
           "summary": "One of your brackets, braces, or parentheses is open but never closes.",
@@ -192,7 +192,6 @@
         },
         {
           "if": {
-            "match_message": ["cannot assign to"],
             "match_code": ["^(\\s*)(if|elif|while)\\b.*="],
             "not_code": ["==", "<=", ">=", "!="]
           },
