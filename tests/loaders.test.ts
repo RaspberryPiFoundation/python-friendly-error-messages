@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { loadCopydeckFor } from "../src/loaders";
 import { friendlyExplain, loadCopydeck, registerAdapter } from "../src/engine";
-import { skulptAdapter } from "../src/adapters/skulpt";
+import { cpythonAdapter } from "../src/adapters/cpython";
 
 const makeRes = (ok: boolean, data?: any) =>
   new Response(ok ? JSON.stringify(data) : "not found", { status: ok ? 200 : 404 });
@@ -23,7 +23,7 @@ describe("loadCopydeckFor", () => {
       .mockResolvedValueOnce(makeRes(true, minimalDeck)); // /copydecks/en/copydeck.json
 
     await loadCopydeckFor("en-GB");
-    registerAdapter("skulpt", skulptAdapter);
+    registerAdapter("skulpt", cpythonAdapter);
 
     const res = friendlyExplain({
       error: { type: "TypeError", message: "bad", raw: "TypeError: bad", runtime: "unknown" },
@@ -43,7 +43,7 @@ describe("loadCopydeckFor", () => {
 
   it("still supports manual loadCopydeck for tests without fetch", () => {
     loadCopydeck(minimalDeck as any);
-    registerAdapter("skulpt", skulptAdapter);
+    registerAdapter("skulpt", cpythonAdapter);
     const res = friendlyExplain({
       error: { type: "NameError", message: "name 'x' is not defined", raw: "NameError: name 'x' is not defined", runtime: "unknown" },
       code: ""

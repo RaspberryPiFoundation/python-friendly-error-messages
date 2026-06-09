@@ -1,4 +1,4 @@
-import type { CopyDeck, ExplainOptions, ExplainResult, Section, Trace } from "./types";
+import type { CopyDeck, ExplainOptions, ExplainResult, Runtime, Section, Trace } from "./types";
 import { escapeHtml, safeRegexTest, tmpl } from "./utils";
 
 type InternalState = {
@@ -34,6 +34,9 @@ const coerceTrace = (input: string | Error | Trace, code?: string, runtime?: str
   if (!parsed) {
     throw new Error(`Could not parse error for runtime \"${runtime}\".`);
   }
+  // The runtime-agnostic adapter leaves `runtime: "unknown"`; this adds the concrete
+  // runtime we dispatched on so the trace carries the correct label
+  parsed.runtime = runtime as Runtime;
   return parsed;
 };
 

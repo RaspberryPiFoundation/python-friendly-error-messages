@@ -57,7 +57,7 @@
       : './vendor/python-friendly-error-messages/index.browser.js';
     const libPath = cacheBust ? `${libPathBase}?cb=${encodeURIComponent(cacheBust)}` : libPathBase;
 
-    const { friendlyExplain, loadCopydeckFor, skulptAdapter, pyodideAdapter } = await import(libPath);
+    const { friendlyExplain, loadCopydeckFor, cpythonAdapter } = await import(libPath);
 
     async function initDemo() {
       const container = document.getElementById('demo-container');
@@ -97,8 +97,8 @@
         await loadCopydeckFor('en');
 
         const adaptersByRuntime = {
-          skulpt: skulptAdapter,
-          pyodide: pyodideAdapter
+          skulpt: cpythonAdapter,
+          pyodide: cpythonAdapter
         };
 
         const processedExamples = examples.map((example) => {

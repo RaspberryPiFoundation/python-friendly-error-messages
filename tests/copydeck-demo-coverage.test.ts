@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { friendlyExplain, loadCopydeck, registerAdapter } from "../src/engine";
-import { skulptAdapter } from "../src/adapters/skulpt";
-import { pyodideAdapter } from "../src/adapters/pyodide";
+import { cpythonAdapter } from "../src/adapters/cpython";
 import copydeck from "../copydecks/en/copydeck.json";
 import { examples } from "../docs/demo-examples.js";
 
@@ -14,15 +13,15 @@ type DemoExample = {
 };
 
 const adaptersByRuntime = {
-  skulpt: skulptAdapter,
-  pyodide: pyodideAdapter,
+  skulpt: cpythonAdapter,
+  pyodide: cpythonAdapter,
 };
 
 describe("copydeck/demo coverage", () => {
   beforeAll(() => {
     loadCopydeck(copydeck as any);
-    registerAdapter("skulpt", skulptAdapter);
-    registerAdapter("pyodide", pyodideAdapter);
+    registerAdapter("skulpt", cpythonAdapter);
+    registerAdapter("pyodide", cpythonAdapter);
   });
 
   it("maps each demo example to its expected variant", () => {

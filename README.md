@@ -21,16 +21,17 @@ It can be used in browser-based editors (like RPF's [Code Editor web component](
 import {
   loadCopydeckFor,
   registerAdapter,
-  skulptAdapter,
-  pyodideAdapter,
+  cpythonAdapter,
   friendlyExplain
 } from "python-friendly-error-messages";
 
 await loadCopydeckFor(navigator.language); // falls back to "en"
 
-// register runtimes
-registerAdapter("skulpt", skulptAdapter);
-registerAdapter("pyodide", pyodideAdapter);
+// register runtimes - Skulpt and Pyodide both appear to emit CPython-style tracebacks,
+// so the same adapter handles both. The runtime name you register under is
+// added onto the resulting trace
+registerAdapter("skulpt", cpythonAdapter);
+registerAdapter("pyodide", cpythonAdapter);
 
 // later, when you have an error string and some code:
 const result = friendlyExplain({

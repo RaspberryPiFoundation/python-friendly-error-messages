@@ -7,7 +7,18 @@ const lastLineTypeMessage = (raw: string) => {
   return { type: m ? m[1] : null, message: m ? m[2] : tail, tail, lines };
 };
 
-export const skulptAdapter: AdapterFn = (raw, code) => {
+/**
+ * Parses a CPython-shaped traceback (`File "...", line N`).
+ *
+ * Skulpt and Pyodide both emit this format, so a single adapter covers both.
+ * There is no current need for runtime-specific parsing . The `runtime` label on
+ * the returned trace is left as "unknown"; the engine adds the concrete runtime
+ * (the registration key it dispatched on) in `coerceTrace`. If the two runtimes
+ * ever diverge (e.g CPython 3.11+ caret ranges or "Did you mean?" hints that
+ * Pyodide surfaces but Skulpt does not), branch here on a passed-in runtime
+ * hint to parse those features out of the message
+ */
+export const cpythonAdapter: AdapterFn = (raw, code) => {
   const { type, message, tail, lines } = lastLineTypeMessage(raw);
   let file: string | undefined, line: number | undefined, col: number | undefined;
 
@@ -17,6 +28,8 @@ export const skulptAdapter: AdapterFn = (raw, code) => {
       file = mm[1];
       line = parseInt(mm[2], 10);
     }
+    const cc = L.match(/column\s+(\d+)/i);
+    if (cc) col = parseInt(cc[1], 10);
   }
   if (!line) {
     const loc = tail.match(/\b(?:on|at)\s+line\s+(\d+)\s+(?:of|in)\s+([^\s:]+)\b/i);
@@ -38,7 +51,7 @@ export const skulptAdapter: AdapterFn = (raw, code) => {
   // - name: quoted symbol from the message (helpful for NameError/KeyError/etc.)
   //
   // If none are present, the input is not parseable enough for this adapter,
-  // so we return null and let the caller handle that failure explicitly.
+  // so we return null and let the caller handle that failure explicitly
   const hasStructuredSignal = Boolean(type || line || name);
   if (!hasStructuredSignal) return null;
 
@@ -51,7 +64,7 @@ export const skulptAdapter: AdapterFn = (raw, code) => {
     col,
     frames: [],
     name,
-    runtime: "skulpt"
+    runtime: "unknown"
   };
 
   if (code && line) {

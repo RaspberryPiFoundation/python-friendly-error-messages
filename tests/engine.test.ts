@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { friendlyExplain, loadCopydeck, registerAdapter } from "../src/engine";
-import { skulptAdapter } from "../src/adapters/skulpt";
+import { cpythonAdapter } from "../src/adapters/cpython";
 
 const copydeck = {
   meta: { language: "en", version: 1 },
@@ -62,7 +62,7 @@ const copydeck = {
 
 describe("engine", () => {
   loadCopydeck(copydeck as any);
-  registerAdapter("skulpt", skulptAdapter);
+  registerAdapter("skulpt", cpythonAdapter);
 
   it("explains NameError with name and patch", () => {
     const code = `print("Hello")\nprint(kittens)\n`;
