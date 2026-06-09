@@ -1,3 +1,6 @@
+# Ignore any exported CSV files (see scripts/)
+copydeck*.csv
+
 # Node / TypeScript
 node_modules/
 dist/
