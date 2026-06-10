@@ -21,18 +21,14 @@
       }
     }
   },
-
+  
   "ui": {
     "line": "line",
     "in": "in",
     "thisFile": "this file",
     "originalError": "Original error",
     "error": "Error",
-    "copydeckNotLoaded": "Copydeck not loaded",
-    "pythonError": "Python error",
-    "fallbackSummary": "Start with the last line of the trace (message) and the highlighted code line.",
-    "fallbackWhy": "The last line of the trace tells you the error type and main cause.",
-    "fallbackStep": "Try a fix and run again."
+    "copydeckNotLoaded": "Copydeck not loaded"
   },
   "errors": {
     "NameError": {
@@ -192,7 +188,6 @@
         },
         {
           "if": {
-            "match_message": ["cannot assign to"],
             "match_code": ["^(\\s*)(if|elif|while)\\b.*="],
             "not_code": ["==", "<=", ">=", "!="]
           },
@@ -207,19 +202,6 @@
             "loc": "Where the = is used in a condition, e.g. line 6 in main.py",
             "codeLine": "The condition line, e.g. if score = 10:"
           }
-        },
-        {
-          "if": {
-            "match_message": ["unexpected EOF while parsing", "incomplete input"]
-          },
-          "title": "Python reached the end before the code was complete",
-          "summary": "Python got to the end of the file, but something was still unfinished.",
-          "why": "A line or block was started but not completed, such as a bracket, quote, or block body.",
-          "steps": [
-            "Check the final lines of your code first.",
-            "Look for missing closing brackets, quotes, or colons.",
-            "Make sure every started block has code inside it."
-          ]
         },
         {
           "if": {
@@ -340,19 +322,6 @@
           "why": "In mathematics, division by zero is undefined.",
           "steps": [
             "Change the calculation so that you are not dividing a number by 0."
-          ]
-        }
-      ]
-    },
-
-    "Other": {
-      "variants": [
-        {
-          "title": "Python error",
-          "summary": "Start with the last line of the message and the highlighted code line.",
-          "why": "The last line of the traceback tells you the error type and main cause.",
-          "steps": [
-            "Fix one small thing and run again."
           ]
         }
       ]

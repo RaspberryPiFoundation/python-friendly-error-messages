@@ -118,18 +118,20 @@
 
   <script type="module">
     import { examples } from './demo-examples.js';
+    import { PYODIDE_VERSION } from './pyodide-config.js';
 
     const tableBody = document.querySelector('#data-table tbody');
     const rowCount = document.querySelector('#row-count');
 
-    rowCount.textContent = `${examples.length} rows`;
+    // Traces are cached from real Pyodide output (npm run regen:traces). The live demo (index.html) regenerates them in-browser against the same pinned version
+    rowCount.textContent = `${examples.length} rows · traces cached from Pyodide v${PYODIDE_VERSION}`;
     tableBody.innerHTML = examples.map((example, index) => `
       <tr>
         <td>${index + 1}</td>
         <td>${escapeHtml(example.title)}</td>
         <td>
-          <span class="demo-data__runtime demo-data__runtime--${escapeHtml(example.runtime)}">
-            ${escapeHtml(example.runtime)}
+          <span class="demo-data__runtime demo-data__runtime--pyodide">
+            pyodide
           </span>
         </td>
         <td><div class="demo-data__mono">${escapeHtml(example.code)}</div></td>

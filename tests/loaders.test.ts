@@ -8,7 +8,7 @@ const makeRes = (ok: boolean, data?: any) =>
 
 const minimalDeck = {
   meta: { language: "en", version: 1 },
-  errors: { Other: { variants: [{ title: "Python error", summary: "Look at the last line." }] } }
+  errors: { NameError: { variants: [{ title: "Name not found", summary: "Look at the last line." }] } }
 };
 
 describe("loadCopydeckFor", () => {
@@ -26,10 +26,10 @@ describe("loadCopydeckFor", () => {
     registerAdapter("skulpt", cpythonAdapter);
 
     const res = friendlyExplain({
-      error: { type: "TypeError", message: "bad", raw: "TypeError: bad", runtime: "unknown" },
+      error: { type: "NameError", message: "name 'x' is not defined", raw: "NameError: name 'x' is not defined", runtime: "unknown" },
       code: ""
     });
-    expect(res.title).toBe("Python error");
+    expect(res?.title).toBe("Name not found");
     expect((globalThis.fetch as any).mock.calls[0][0]).toMatch(/copydecks\/en-GB\/copydeck\.json/);
     expect((globalThis.fetch as any).mock.calls[1][0]).toMatch(/copydecks\/en\/copydeck\.json/);
   });
@@ -48,6 +48,6 @@ describe("loadCopydeckFor", () => {
       error: { type: "NameError", message: "name 'x' is not defined", raw: "NameError: name 'x' is not defined", runtime: "unknown" },
       code: ""
     });
-    expect(res.title).toBe("Python error");
+    expect(res?.title).toBe("Name not found");
   });
 });

@@ -51,11 +51,6 @@ const copydeck = {
           steps: ["Check spelling."]
         }
       ]
-    },
-    Other: {
-      variants: [
-        { title: "Python error", summary: "Look at the last line.", steps: ["Fix a small thing and retry."] }
-      ]
     }
   }
 };
@@ -63,6 +58,14 @@ const copydeck = {
 describe("engine", () => {
   loadCopydeck(copydeck as any);
   registerAdapter("skulpt", cpythonAdapter);
+
+  it("returns null when no copydeck entry matches the error type", () => {
+    const raw = `Traceback (most recent call last):
+  File "main.py", line 1, in <module>
+ValueError: invalid literal for int() with base 10: 'abc'`;
+    const res = friendlyExplain({ error: raw, code: `int("abc")`, runtime: "skulpt" });
+    expect(res).toBeNull();
+  });
 
   it("explains NameError with name and patch", () => {
     const code = `print("Hello")\nprint(kittens)\n`;

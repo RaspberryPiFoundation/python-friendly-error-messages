@@ -1,7 +1,7 @@
 export const examples = [
   {
     title: "NameError - Variable Not Created Yet",
-    runtime: "skulpt",
+    runtime: "pyodide",
     expectedVariantId: "NameError/variants/0",
     code: `def outer():
   def inner():
@@ -12,27 +12,24 @@ export const examples = [
 
 outer()`,
     trace: `Traceback (most recent call last):
-File "main.py", line 8, in <module>
-  outer()
-File "main.py", line 5, in outer
-  print(inner())
-File "main.py", line 3, in inner
-  return total
+  File "main.py", line 8, in <module>
+  File "main.py", line 5, in outer
+  File "main.py", line 3, in inner
 NameError: cannot access free variable 'total' where it is not associated with a value in enclosing scope`
   },
   {
     title: "NameError - Variable Not Defined Here",
-    runtime: "skulpt",
+    runtime: "pyodide",
     expectedVariantId: "NameError/variants/1",
     code: `print("Hello")
 print(kittens)`,
     trace: `Traceback (most recent call last):
-File "main.py", line 2, in <module>
+  File "main.py", line 2, in <module>
 NameError: name 'kittens' is not defined`
   },
   {
     title: "NameError - Variable Used Before Assignment",
-    runtime: "skulpt",
+    runtime: "pyodide",
     expectedVariantId: "UnboundLocalError/variants/0",
     code: `def calculate():
   result = x + 5
@@ -41,22 +38,20 @@ NameError: name 'kittens' is not defined`
 
 calculate()`,
     trace: `Traceback (most recent call last):
-File "main.py", line 5, in <module>
-  calculate()
-File "main.py", line 2, in calculate
-UnboundLocalError: local variable 'x' referenced before assignment`
+  File "main.py", line 6, in <module>
+  File "main.py", line 2, in calculate
+UnboundLocalError: cannot access local variable 'x' where it is not associated with a value`
   },
   {
     title: "SyntaxError - Missing Colon",
-    runtime: "skulpt",
+    runtime: "pyodide",
     expectedVariantId: "SyntaxError/variants/0",
     code: `for i in range(3)
   print(i)`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  for i in range(3)
-                    ^
-SyntaxError: invalid syntax`
+    trace: `  File "main.py", line 1
+    for i in range(3)
+                     ^
+SyntaxError: expected ':'`
   },
   {
     title: "SyntaxError - Comma Instead Of Colon",
@@ -64,10 +59,9 @@ SyntaxError: invalid syntax`
     expectedVariantId: "SyntaxError/variants/1",
     code: `if score > 10,
   print("Great")`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  if score > 10,
-               ^
+    trace: `  File "main.py", line 1
+    if score > 10,
+                 ^
 SyntaxError: invalid syntax`
   },
   {
@@ -76,10 +70,9 @@ SyntaxError: invalid syntax`
     expectedVariantId: "SyntaxError/variants/2",
     code: `if score > 10::
   print("Great")`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  if score > 10::
-                ^
+    trace: `  File "main.py", line 1
+    if score > 10::
+                  ^
 SyntaxError: invalid syntax`
   },
   {
@@ -87,10 +80,9 @@ SyntaxError: invalid syntax`
     runtime: "pyodide",
     expectedVariantId: "SyntaxError/variants/3",
     code: `total = (1 + 2`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  total = (1 + 2
-          ^
+    trace: `  File "main.py", line 1
+    total = (1 + 2
+            ^
 SyntaxError: '(' was never closed`
   },
   {
@@ -99,21 +91,19 @@ SyntaxError: '(' was never closed`
     expectedVariantId: "SyntaxError/variants/4",
     code: `values = [1, 2, 3)
 print(values)`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  values = [1, 2, 3)
-                    ^
-SyntaxError: closing parenthesis ')' does not match opening bracket '['`
+    trace: `  File "main.py", line 1
+    values = [1, 2, 3)
+                     ^
+SyntaxError: closing parenthesis ')' does not match opening parenthesis '['`
   },
   {
     title: "SyntaxError - Unterminated String",
     runtime: "pyodide",
     expectedVariantId: "SyntaxError/variants/5",
     code: `print("Hello`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  print("Hello
-        ^
+    trace: `  File "main.py", line 1
+    print("Hello
+          ^
 SyntaxError: unterminated string literal (detected at line 1)`
   },
   {
@@ -121,10 +111,9 @@ SyntaxError: unterminated string literal (detected at line 1)`
     runtime: "pyodide",
     expectedVariantId: "SyntaxError/variants/6",
     code: `numbers = [1 2, 3]`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  numbers = [1 2, 3]
-             ^
+    trace: `  File "main.py", line 1
+    numbers = [1 2, 3]
+               ^^^
 SyntaxError: invalid syntax. Perhaps you forgot a comma?`
   },
   {
@@ -133,44 +122,30 @@ SyntaxError: invalid syntax. Perhaps you forgot a comma?`
     expectedVariantId: "SyntaxError/variants/7",
     code: `if score = 10:
   print("Great")`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  if score = 10:
-     ^
-SyntaxError: cannot assign to name 'score'`
-  },
-  {
-    title: "SyntaxError - Incomplete Input",
-    runtime: "pyodide",
-    expectedVariantId: "SyntaxError/variants/8",
-    code: `value =`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 3
-  value =
-         ^
-SyntaxError: incomplete input`
+    trace: `  File "main.py", line 1
+    if score = 10:
+       ^^^^^^^^^^
+SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?`
   },
   {
     title: "SyntaxError - Invalid Operator",
     runtime: "pyodide",
-    expectedVariantId: "SyntaxError/variants/9",
+    expectedVariantId: "SyntaxError/variants/8",
     code: `count = 0
 count++`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 2
-  count++
-        ^
+    trace: `  File "main.py", line 2
+    count++
+           ^
 SyntaxError: invalid syntax`
   },
   {
     title: "SyntaxError - Generic Mismatch",
     runtime: "pyodide",
-    expectedVariantId: "SyntaxError/variants/10",
+    expectedVariantId: "SyntaxError/variants/9",
     code: `result = 1 +* 2`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1
-  result = 1 +* 2
-              ^
+    trace: `  File "main.py", line 1
+    result = 1 +* 2
+                ^
 SyntaxError: invalid syntax`
   },
   {
@@ -179,10 +154,8 @@ SyntaxError: invalid syntax`
     expectedVariantId: "IndentationError/variants/0",
     code: `print("Start")
   print("Oops")`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 2
+    trace: `  File "main.py", line 2
     print("Oops")
-    ^
 IndentationError: unexpected indent`
   },
   {
@@ -192,8 +165,7 @@ IndentationError: unexpected indent`
     code: `age = 10
 message = "I am " + age + " years old"`,
     trace: `Traceback (most recent call last):
-File "main.py", line 2, in <module>
-  message = "I am " + age + " years old"
+  File "main.py", line 2, in <module>
 TypeError: can only concatenate str (not "int") to str`
   },
   {
@@ -203,8 +175,7 @@ TypeError: can only concatenate str (not "int") to str`
     code: `items = []
 items.push(3)`,
     trace: `Traceback (most recent call last):
-File "main.py", line 2, in <module>
-  items.push(3)
+  File "main.py", line 2, in <module>
 AttributeError: 'list' object has no attribute 'push'`
   },
   {
@@ -214,8 +185,7 @@ AttributeError: 'list' object has no attribute 'push'`
     code: `name = "Ada"
 name.shrink()`,
     trace: `Traceback (most recent call last):
-File "main.py", line 2, in <module>
-  name.shrink()
+  File "main.py", line 2, in <module>
 AttributeError: 'str' object has no attribute 'shrink'`
   },
   {
@@ -225,19 +195,17 @@ AttributeError: 'str' object has no attribute 'shrink'`
     code: `numbers = [1, 2, 3]
 print(numbers[5])`,
     trace: `Traceback (most recent call last):
-File "main.py", line 2, in <module>
-  print(numbers[5])
+  File "main.py", line 2, in <module>
 IndexError: list index out of range`
   },
   {
     title: "KeyError - Dictionary Key Not Found",
-    runtime: "skulpt",
+    runtime: "pyodide",
     expectedVariantId: "KeyError/variants/0",
     code: `person = {"name": "Alice", "age": 30}
 print(person["city"])`,
     trace: `Traceback (most recent call last):
-File "main.py", line 2, in <module>
-  print(person["city"])
+  File "main.py", line 2, in <module>
 KeyError: 'city'`
   },
   {
@@ -247,18 +215,7 @@ KeyError: 'city'`
     code: `result = 10 / 0
 print(result)`,
     trace: `Traceback (most recent call last):
-File "main.py", line 1, in <module>
-  result = 10 / 0
+  File "main.py", line 1, in <module>
 ZeroDivisionError: division by zero`
-  },
-  {
-    title: "Other - ValueError Fallback",
-    runtime: "pyodide",
-    expectedVariantId: "Other/variants/0",
-    code: `int("abc")`,
-    trace: `Traceback (most recent call last):
-File "main.py", line 1, in <module>
-  int("abc")
-ValueError: invalid literal for int() with base 10: 'abc'`
   }
 ];

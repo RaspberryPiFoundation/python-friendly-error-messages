@@ -1,6 +1,7 @@
 {
   "name": "python-friendly-error-messages-demo",
   "version": "0.0.1",
+  "type": "module",
   "scripts": {
     "prepare-demo": "mkdir -p ./vendor/python-friendly-error-messages && cp ./node_modules/@raspberrypifoundation/python-friendly-error-messages/dist/index.browser.js ./vendor/python-friendly-error-messages/index.browser.js"
   },

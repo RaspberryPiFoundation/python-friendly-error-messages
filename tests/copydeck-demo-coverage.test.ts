@@ -34,10 +34,11 @@ describe("copydeck/demo coverage", () => {
         error: parsedTrace!,
         code: example.code,
       });
+      expect(result, `${example.title}: no friendly explanation returned`).not.toBeNull();
 
       expect(
-        result.variantId,
-        `${example.title}: expected ${example.expectedVariantId} but got ${result.variantId}`
+        result!.variantId,
+        `${example.title}: expected ${example.expectedVariantId} but got ${result!.variantId}`
       ).toBe(example.expectedVariantId);
     }
   });
@@ -57,8 +58,7 @@ describe("copydeck/demo coverage", () => {
         error: parsedTrace,
         code: example.code,
       });
-
-      seenVariantIds.add(result.variantId);
+      if (result) seenVariantIds.add(result.variantId);
     }
 
     for (const variantId of allVariantIds) {

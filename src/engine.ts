@@ -17,7 +17,7 @@ const getUiString = (key: keyof NonNullable<CopyDeck["ui"]>, fallback: string): 
 export const registerAdapter = (name: string, fn: (raw: string, code?: string) => Trace | null) =>
   (state.adapters[name] = fn);
 
-const coerceTrace = (input: string | Error | Trace, code?: string, runtime?: string): Trace => {
+const coerceTrace = (input: string | Error | Trace, code?: string, runtime?: string): Trace | null => {
   if ((input as Trace).raw !== undefined) return input as Trace;
 
   if (!runtime) {
@@ -31,9 +31,9 @@ const coerceTrace = (input: string | Error | Trace, code?: string, runtime?: str
 
   const raw = typeof input === "string" ? input : String((input as Error).stack || (input as Error).message || input);
   const parsed = adapter(raw, code);
-  if (!parsed) {
-    throw new Error(`Could not parse error for runtime \"${runtime}\".`);
-  }
+  // The error could not be parsed into a structured trace, so there is no friendly
+  // explanation to offer. Return null and let the caller fall back to the raw error.
+  if (!parsed) return null;
   // The runtime-agnostic adapter leaves `runtime: "unknown"`; this adds the concrete
   // runtime we dispatched on so the trace carries the correct label
   parsed.runtime = runtime as Runtime;
@@ -42,8 +42,8 @@ const coerceTrace = (input: string | Error | Trace, code?: string, runtime?: str
 
 const pickVariant = (trace: Trace, code: string | undefined, sections?: Section[]) => {
   const deck = state.copy;
-  const kind = trace.type && deck?.errors[trace.type] ? trace.type : "Other";
-  const entry = deck?.errors[kind];
+  const kind = trace.type;
+  const entry = kind ? deck?.errors[kind] : undefined;
   if (!entry) return null;
 
   const codeLine = trace.codeLine || "";
@@ -140,28 +140,23 @@ const pickVariant = (trace: Trace, code: string | undefined, sections?: Section[
   return null;
 };
 
-export const friendlyExplain = (opts: ExplainOptions): ExplainResult => {
+export const friendlyExplain = (opts: ExplainOptions): ExplainResult | null => {
   if (!state.copy) throw new Error("Copydeck not loaded");
   const code = opts.code;
 
   const trace = coerceTrace(opts.error, code, opts.runtime);
+  // The error could not be parsed — no friendly explanation; caller uses the raw error.
+  if (!trace) return null;
+
   if (code && trace.line && !trace.codeLine) {
     const lines = code.split(/\r?\n/);
     trace.codeLine = lines[trace.line - 1]?.trim();
   }
 
   const chosen = pickVariant(trace, code, opts.sections);
-  if (!chosen) {
-    return {
-      trace,
-      variantId: "Other/variants/0",
-      title: getUiString("pythonError", "Python error"),
-      summary: getUiString("fallbackSummary", "Start with the last line of the trace (message) and the highlighted code line."),
-      why: getUiString("fallbackWhy", "The last line of the trace tells you the error type and main cause."),
-      steps: [getUiString("fallbackStep", "Try a fix and run again.")],
-      html: undefined
-    };
-  }
+  // No copydeck entry/variant matched this error. Return null so the caller can fall
+  // back to showing the raw Python/Pyodide error as-is, rather than synthetic copy.
+  if (!chosen) return null;
 
   return { trace, ...chosen };
 };

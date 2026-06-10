@@ -63,10 +63,6 @@ export type CopyDeck = {
     originalError?: string;
     error?: string;
     copydeckNotLoaded?: string;
-    pythonError?: string;
-    fallbackSummary?: string;
-    fallbackWhy?: string;
-    fallbackStep?: string;
   };
 };
 

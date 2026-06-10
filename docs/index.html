@@ -36,6 +36,8 @@
 
   <script type="module">
     import { examples } from './demo-examples.js';
+    import { PYODIDE_VERSION } from './pyodide-config.js';
+    import { runAndCaptureTrace, getVersions } from './run-pyodide.js';
 
     const isLocalDevelopment = Boolean(window.__PFEM_IS_LOCAL_DEVELOPMENT__);
 
@@ -96,42 +98,40 @@
       try {
         await loadCopydeckFor('en');
 
-        const adaptersByRuntime = {
-          skulpt: cpythonAdapter,
-          pyodide: cpythonAdapter
-        };
+        // Errors are generated live by running each snippet through real Pyodide (pinned in pyodide-config.js), so the demo shows exactly what that version of Pyodide / Python produces
+        const versionNote = document.createElement('p');
+        versionNote.className = 'demo__runtime-note';
+        versionNote.textContent = `Loading Pyodide v${PYODIDE_VERSION}…`;
+        container.before(versionNote);
 
-        const processedExamples = examples.map((example) => {
+        const versions = await getVersions();
+        versionNote.innerHTML =
+          `Errors below are generated live by ` +
+          `<strong>Pyodide v${escapeHtml(versions.pyodide)}</strong> · ` +
+          `<strong>Python ${escapeHtml(versions.python)}</strong>`;
+
+        const processedExamples = [];
+        for (const example of examples) {
           try {
-            const runtimeAdapter = adaptersByRuntime[example.runtime];
-            if (!runtimeAdapter) {
-              throw new Error(`No adapter configured for runtime \"${example.runtime}\".`);
+            const trace = await runAndCaptureTrace(example.code);
+            if (!trace) {
+              throw new Error('Code ran without raising an error.');
             }
-            const parsedTrace = runtimeAdapter(example.trace, example.code);
+            const parsedTrace = cpythonAdapter(trace, example.code);
             if (!parsedTrace) {
-              throw new Error(`Could not parse trace for runtime \"${example.runtime}\".`);
+              throw new Error('Could not parse the Pyodide trace.');
             }
-
-            const result = friendlyExplain({
-              error: parsedTrace,
-              code: example.code
-            });
-
-            return {
-              example,
-              result,
-              error: null
-            };
+            const result = friendlyExplain({ error: parsedTrace, code: example.code });
+            if (!result) {
+              throw new Error('No friendly mapping for this error — nothing to show.');
+            }
+            processedExamples.push({ example, trace, result, error: null });
           } catch (err) {
-            return {
-              example,
-              result: null,
-              error: err
-            };
+            processedExamples.push({ example, trace: '', result: null, error: err });
           }
-        });
+        }
 
-        const tableRowsHtml = processedExamples.map(({ example, result, error }, index) => {
+        const tableRowsHtml = processedExamples.map(({ example, trace, result, error }, index) => {
           const rowId = getRowId(example.title, index);
           const explanationCell = error
             ? `<div class="demo__error demo__error--inline">Error processing: ${escapeHtml(error.message)}</div>`
@@ -143,9 +143,9 @@
                 <a class="demo__row-link" href="#${rowId}" aria-label="Link to row ${index + 1}">${index + 1}</a>
               </td>
               <td>${escapeHtml(example.title)}</td>
-              <td><span class="demo__badge demo__badge--${example.runtime}">${example.runtime}</span></td>
+              <td><span class="demo__badge demo__badge--pyodide">pyodide</span></td>
               <td><div class="demo__mono">${escapeHtml(example.code)}</div></td>
-              <td><div class="demo__mono demo__mono--trace">${escapeHtml(example.trace)}</div></td>
+              <td><div class="demo__mono demo__mono--trace">${escapeHtml(trace)}</div></td>
               <td><div class="demo__table-explanation">${explanationCell}</div></td>
             </tr>
           `;
