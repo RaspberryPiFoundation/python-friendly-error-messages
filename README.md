@@ -121,9 +121,7 @@ npm install --save-dev pyodide@<version>
 npm run regen:traces
 ```
 
-`npm run regen:traces` runs the pinned Pyodide once and writes the real traceback for
-every example into `docs/demo-examples.js`. This keeps the fast `vitest` coverage test
-asserting against genuine Pyodide output rather than hand-authored fixtures.
+`npm run regen:traces` runs the pinned Pyodide once and writes the real traceback for every example into `docs/demo-examples.js`. This keeps the fast `vitest` coverage test asserting against genuine Pyodide output.
 
 ## Building
 
@@ -154,16 +152,15 @@ One command does everything:
 
 The script:
 
-1. checks you're on a clean `main` in sync with `origin`, and logged in to npm,
-2. runs the tests and build,
-3. bumps the version (updating `package.json` / `package-lock.json`), commits, and tags `vX.Y.Z`,
-4. publishes to npm (prompting for your 2FA OTP if enabled),
-5. points the demo at the new release (bumps `docs/` to the just-published version) and commits it,
-6. pushes the commits and tag, and
-7. creates a GitHub Release with notes generated from the commits/PRs since the previous tag.
+1. Checks you're on a clean `main` in sync with `origin`, and logged in to npm
+2. Runs the tests and build
+3. Bumps the version (updating `package.json` / `package-lock.json`), commits, and tags `vX.Y.Z`
+4. Publishes to npm (prompting for your auth as needed)
+5. Points the demo at the new release (bumps `docs/` to the just-published version) and commits it
+6. Pushes the commits and tag
+7. Creates a GitHub Release with notes generated from the commits/PRs since the previous tag
 
-If `npm publish` fails, nothing is pushed - the script prints how to undo the local
-bump and retry.
+If `npm publish` fails, nothing is pushed. The script prints how to undo the local bump and retry.
 
 ### Prerequisites (one-time)
 
