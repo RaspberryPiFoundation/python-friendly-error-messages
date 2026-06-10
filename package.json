@@ -15,6 +15,9 @@
     "dist",
     "copydecks"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
@@ -25,7 +28,8 @@
     "dev:build": "npm run build:assets && tsc -p tsconfig.json --watch & esbuild src/index.browser.ts --bundle --format=esm --outfile=dist/index.browser.js --loader:.json=json --watch",
     "test": "vitest run",
     "dev:test": "vitest",
-    "regen:traces": "node scripts/regenerate-demo-traces.mjs"
+    "regen:traces": "node scripts/regenerate-demo-traces.mjs",
+    "release": "scripts/release.sh"
   },
   "devDependencies": {
     "cpy-cli": "^6.0.0",

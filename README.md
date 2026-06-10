@@ -1,7 +1,6 @@
 # Python Friendly Error Messages
 
 Todo:
-- Set up automated testing and publishing through GitHub Actions
 - Accessibility of output HTML
 
 A small library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
@@ -116,9 +115,36 @@ You can now import, and use it, elsewhere (see Usage notes).
 
 The package is published to: https://www.npmjs.com/package/@raspberrypifoundation/python-friendly-error-messages
 
-## Publishing
+## Releasing
+
+Releases are (currently) generated and published to npm from your local machine, so it can use your npm auth and 2FA OTP rather than a long-lived CI token (CI publishing is a possible future enhancement). 
+
+One command does everything:
 
 ```bash
-npm login
-npm publish
+./scripts/release.sh patch   # 0.3.0 → 0.3.1
+./scripts/release.sh minor   # 0.3.0 → 0.4.0
+./scripts/release.sh major   # 0.3.0 → 1.0.0
+./scripts/release.sh 1.2.3   # explicit version
 ```
+
+The script:
+
+1. checks you're on a clean `main` in sync with `origin`, and logged in to npm,
+2. runs the tests and build,
+3. bumps the version (updating `package.json` / `package-lock.json`), commits, and tags `vX.Y.Z`,
+4. publishes to npm (prompting for your 2FA OTP if enabled),
+5. pushes the commit and tag, and
+6. creates a GitHub Release with notes generated from the commits/PRs since the previous tag.
+
+If `npm publish` fails, nothing is pushed — the script prints how to undo the local
+bump and retry.
+
+### Prerequisites (one-time)
+
+- `npm login` — publishing uses your local npm credentials (the package publishes
+  publicly via `publishConfig.access: "public"`).
+- `gh auth login` — the GitHub Release is created with the `gh` CLI.
+
+Tests still run automatically on every push to `main` and on pull requests via
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml).
