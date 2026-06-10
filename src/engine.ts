@@ -148,9 +148,19 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult | null => {
   // The error could not be parsed — no friendly explanation; caller uses the raw error.
   if (!trace) return null;
 
-  if (code && trace.line && !trace.codeLine) {
+  // Caller-provided file/line take precedence over whatever was parsed from the trace
+  // Useful when the traceback's innermost frame references an internal file (eg.
+  // Pyodide's "<exec>") instead of the user's filename, or when the line needs correcting.
+  if (opts.file !== undefined) trace.file = opts.file;
+  if (opts.line !== undefined) trace.line = opts.line;
+
+  // (Re)derive the code context from the effective line: when the caller overrides the
+  // line, or when a pre-parsed trace arrived without a codeLine.
+  if (code && trace.line && (opts.line !== undefined || !trace.codeLine)) {
     const lines = code.split(/\r?\n/);
     trace.codeLine = lines[trace.line - 1]?.trim();
+    trace.codeBefore = lines.slice(Math.max(0, trace.line - 3), trace.line - 1);
+    trace.codeAfter = lines.slice(trace.line, trace.line + 2);
   }
 
   const chosen = pickVariant(trace, code, opts.sections);

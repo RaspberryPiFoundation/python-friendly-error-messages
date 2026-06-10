@@ -22,6 +22,14 @@ export type Section = "title" | "summary" | "why" | "steps" | "patch" | "details
 export type ExplainOptions = {
   error: string | Error | Trace;
   code?: string;
+  /**
+   * Override the source file, instead of using the one parsed from the trace.
+   * Useful when the traceback's innermost frame references an internal file
+   * (eg. Pyodide's "<exec>") rather than the user's filename.
+   */
+  file?: string;
+  /** Override the source line, instead of using the one parsed from the trace. */
+  line?: number;
   locale?: string;
   runtime?: string;
   sections?: Section[];

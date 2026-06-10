@@ -50,6 +50,14 @@ if (result) {
   // no friendly explanation — show the original traceback as-is
 }
 
+// if the trace reports an unhelpful source location (eg. Pyodide runs code as "<exec>"), pass file explicitly to override what's parsed from the trace:
+const result = friendlyExplain({
+  error: rawTracebackString,
+  code: editorCode,
+  runtime: "pyodide",
+  file: "main.py", // overrides the file from the trace
+});
+
 // optionally limit which sections appear in result.html:
 const result = friendlyExplain({
   error: rawTracebackString,

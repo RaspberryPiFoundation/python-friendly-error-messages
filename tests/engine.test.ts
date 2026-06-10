@@ -67,6 +67,25 @@ ValueError: invalid literal for int() with base 10: 'abc'`;
     expect(res).toBeNull();
   });
 
+  it("lets caller-provided file/line override the trace (e.g. Pyodide's <exec>)", () => {
+    const code = `for i in range(3)\n  print(i)`;
+    const raw = `Traceback (most recent call last):
+  File "/lib/python312.zip/_pyodide/_base.py", line 148, in _parse_and_compile_gen
+  File "<exec>", line 1
+    for i in range(3)
+                     ^
+SyntaxError: expected ':'`;
+
+    const without = friendlyExplain({ error: raw, code, runtime: "skulpt" });
+    expect(without!.trace.file).toBe("<exec>");
+
+    const withOverride = friendlyExplain({ error: raw, code, runtime: "skulpt", file: "main.py", line: 1 });
+    expect(withOverride!.trace.file).toBe("main.py");
+    expect(withOverride!.trace.line).toBe(1);
+    expect(withOverride!.trace.codeLine).toBe("for i in range(3)");
+    expect(withOverride!.summary).toContain("main.py");
+  });
+
   it("explains NameError with name and patch", () => {
     const code = `print("Hello")\nprint(kittens)\n`;
     const raw = `Traceback (most recent call last):
