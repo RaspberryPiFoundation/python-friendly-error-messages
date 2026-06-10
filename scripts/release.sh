@@ -77,6 +77,21 @@ if ! npm publish; then
   exit 1
 fi
 
+# ── Point the demo at the just-published version ────────────────────────────
+# The demo's "vendored release" build (served on GitHub Pages) is regenerated from the published npm package pinned in docs/
+newversion="${newtag#v}"
+pkg="@raspberrypifoundation/python-friendly-error-messages"
+echo "Pointing the demo at $newtag…"
+if ( cd "$ROOT/docs" && npm pkg set "dependencies.$pkg=^$newversion" && npm install >/dev/null 2>&1 ); then
+  git add docs/package.json docs/package-lock.json
+  git commit -m "chore: point demo at $newtag" >/dev/null
+else
+  echo "Warning: couldn't update the demo dependency — the new version may not have" >&2
+  echo "propagated to npm yet. Once it has, run:" >&2
+  echo "  (cd docs && npm install $pkg@^$newversion) && git commit -am 'chore: point demo at $newtag' && git push" >&2
+  git checkout -- docs/package.json docs/package-lock.json 2>/dev/null || true
+fi
+
 # ── Push + GitHub Release ───────────────────────────────────────────────────
 git push --follow-tags origin main
 

@@ -134,8 +134,9 @@ The script:
 2. runs the tests and build,
 3. bumps the version (updating `package.json` / `package-lock.json`), commits, and tags `vX.Y.Z`,
 4. publishes to npm (prompting for your 2FA OTP if enabled),
-5. pushes the commit and tag, and
-6. creates a GitHub Release with notes generated from the commits/PRs since the previous tag.
+5. points the demo at the new release (bumps `docs/` to the just-published version) and commits it,
+6. pushes the commits and tag, and
+7. creates a GitHub Release with notes generated from the commits/PRs since the previous tag.
 
 If `npm publish` fails, nothing is pushed — the script prints how to undo the local
 bump and retry.
