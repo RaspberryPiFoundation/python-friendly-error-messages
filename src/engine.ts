@@ -152,7 +152,7 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult | null => {
   const code = opts.code;
 
   const trace = coerceTrace(opts.error, code, opts.runtime);
-  // The error could not be parsed — no friendly explanation; caller uses the raw error
+  // The error could not be parsed - no friendly explanation; caller uses the raw error
   if (!trace) return null;
 
   // Caller-provided file/line take precedence over whatever was parsed from the trace

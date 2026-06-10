@@ -4,7 +4,7 @@
 Reads a reviewed CSV (originally produced by export_copydeck_csv.py, then edited
 in a spreadsheet) and updates title/summary/why/steps for each variant, writing
 the result to a JSON file. The original if_condition and any other metadata are
-preserved from the source copydeck — reviewers cannot change match logic.
+preserved from the source copydeck - reviewers cannot change match logic.
 
 The reader tolerates the mutations a spreadsheet round-trip introduces:
   * blank rows above the header (e.g. a frozen spacer row)

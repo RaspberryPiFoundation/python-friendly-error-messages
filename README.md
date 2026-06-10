@@ -44,7 +44,7 @@ if (result) {
   // result.html is a ready-made snippet
   // or use result.title, result.summary, result.steps, result.patch, result.trace
 } else {
-  // no friendly explanation — show the original traceback as-is
+  // no friendly explanation - show the original traceback as-is
 }
 
 // if the trace reports an unhelpful source location (eg. Pyodide runs code as "<exec>"), pass file explicitly to override what's parsed from the trace:
@@ -70,7 +70,7 @@ See the [demo](docs/README.md) for a full set of examples.
 
 `result.html` is built to be accessible by default (with WCAG 2.1 AA in mind):
 
-- The whole explanation is one labelled group — `<div class="pfem" role="group" lang="…" aria-labelledby="…">`, named by its title, with `lang` taken from the copydeck so screen readers pronounce localised copy correctly (`3.1.2 Language of Parts`). `role="group"` (not a landmark) keeps things uncluttered when several explanations render on one page
+- The whole explanation is one labelled group: `<div class="pfem" role="group" lang="…" aria-labelledby="…">`, named by its title, with `lang` taken from the copydeck so screen readers pronounce localised copy correctly (`3.1.2 Language of Parts`). `role="group"` (not a landmark) keeps things uncluttered when several explanations render on one page
 - The title is deliberately not a heading. Heading level depends on the surrounding page outline, which a library can't know, so the title supplies the group's accessible name instead. If you want it in your heading outline, render your own heading from `result.title` and use `result.html` (or the structured fields) for the body
 - Code is marked up as code; inline tokens use `<code>` and blocks use `<pre><code>`
 - The suggested fix has a visible "Suggested fix" label; the original traceback stays in a native `<details>`/`<summary>`
@@ -162,14 +162,10 @@ The script:
 6. pushes the commits and tag, and
 7. creates a GitHub Release with notes generated from the commits/PRs since the previous tag.
 
-If `npm publish` fails, nothing is pushed — the script prints how to undo the local
+If `npm publish` fails, nothing is pushed - the script prints how to undo the local
 bump and retry.
 
 ### Prerequisites (one-time)
 
-- `npm login` — publishing uses your local npm credentials (the package publishes
-  publicly via `publishConfig.access: "public"`).
-- `gh auth login` — the GitHub Release is created with the `gh` CLI.
-
-Tests still run automatically on every push to `main` and on pull requests via
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+- `npm login`: publishing uses your local npm credentials (the package publishes publicly via `publishConfig.access: "public"`)
+- `gh auth login`: the GitHub Release is created with the `gh` CLI

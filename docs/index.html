@@ -123,7 +123,7 @@
             }
             const result = friendlyExplain({ error: parsedTrace, code: example.code });
             if (!result) {
-              throw new Error('No friendly mapping for this error — nothing to show.');
+              throw new Error('No friendly mapping for this error - nothing to show.');
             }
             processedExamples.push({ example, trace, result, error: null });
           } catch (err) {
