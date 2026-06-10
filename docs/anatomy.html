@@ -39,10 +39,12 @@
               <div class="anatomy__zone-tag">Explain &amp; Suggest - Title &amp; Summary</div>
             </div>
             <div class="anatomy__zone-body">
-              <div class="pfem__title">This variable doesn't exist yet</div>
-              <div class="pfem__summary">Your code uses the variable "<em>firstname</em>", but it hasn't been created
+              <p class="pfem__title">This variable doesn't exist yet</p>
+              <p class="pfem__summary">Your code uses the variable <code class="pfem__var">firstname</code>, but it
+                hasn't been created
                 yet.
-                Check line 2. If you meant to print the text <em>firstname</em>, put it in double quotes.</div>
+                Check <span class="pfem__line">line 2</span>. If you meant to print the text <code
+                  class="pfem__var">firstname</code>, put it in double quotes.</p>
             </div>
           </div>
 
@@ -53,9 +55,10 @@
               <div class="anatomy__zone-tag">Hint &amp; Direct - Why it happened</div>
             </div>
             <div class="anatomy__zone-body">
-              <div class="pfem__why">Without speech marks Python treats <em>firstname</em> as a variable, and this
+              <p class="pfem__why">Without speech marks Python treats <code class="pfem__var">firstname</code> as a
+                variable, and this
                 variable
-                does not exist yet.</div>
+                does not exist yet.</p>
             </div>
           </div>
 
@@ -67,7 +70,7 @@
             </div>
             <div class="anatomy__zone-body">
               <ul class="pfem__steps">
-                <li>If it is meant to be text, put speech marks around <em>firstname</em>.</li>
+                <li>If it is meant to be text, put speech marks around <code class="pfem__var">firstname</code>.</li>
                 <li>If it is meant to be a variable, make it first (for example: <code>firstname = "Jo"</code>).</li>
                 <li>Check spelling and capital letters.</li>
               </ul>
@@ -81,8 +84,11 @@
               <div class="anatomy__zone-tag">Solve - Suggested fix</div>
             </div>
             <div class="anatomy__zone-body">
-              <pre class="pfem__patch">firstname = "Jo"
-print("Hello, " + firstname)</pre>
+              <div class="pfem__patch">
+                <p class="pfem__patch-label">Suggested fix</p>
+                <pre class="pfem__patch-code"><code>firstname = "Jo"
+print("Hello, " + firstname)</code></pre>
+              </div>
             </div>
           </div>
 

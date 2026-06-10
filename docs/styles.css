@@ -101,16 +101,19 @@ h1 {
   color: #5b3f99;
 }
 
+.pfem > :first-child { margin-top: 0; }
+.pfem > :last-child { margin-bottom: 0; }
+
 .pfem__title {
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem;
   line-height: 1.4;
 }
 
 .pfem__summary {
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem;
   line-height: 1.6;
   font-size: 1rem;
 }
@@ -118,16 +121,53 @@ h1 {
 .pfem__why {
   color: #555;
   margin: 1rem 0;
-  padding: 1rem 1rem;
-  padding-left: 1rem;
+  padding: 1rem;
   border-left: 0.5rem solid #3498db;
   background: #f0f7ff;
   border-radius: 0.5rem;
   line-height: 1.6;
 }
 
+/* inline code tokens share a monospace pill; the tint varies by token type */
+.pfem__var,
+.pfem__code,
+.pfem__file {
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  font-size: 0.9em;
+  padding: 0.08em 0.32em;
+  border-radius: 0.25rem;
+}
+
+/* variable names & the offending code line — purple */
+.pfem__var,
+.pfem__code {
+  background: #efe8ff;
+  color: #5b3f99;
+}
+
+/* file name — teal */
+.pfem__file {
+  background: #e0f2f1;
+  color: #00695c;
+}
+
+/* line-number token — not code, so a proportional pill in a warm amber */
+.pfem__line {
+  font-weight: 600;
+  font-size: 0.9em;
+  background: #fff4de;
+  color: #8a5a00;
+  padding: 0.08em 0.32em;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+
+.pfem__steps {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
 .pfem__steps li {
-  margin-left: 1rem;
   margin-bottom: 0.5rem;
   color: #2c3e50;
   line-height: 1.6;
@@ -138,12 +178,27 @@ h1 {
   background: #e8f5e9;
   border: 1px solid #4caf50;
   border-radius: 0.5rem;
-  padding: 1rem 1rem;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+
+.pfem__patch-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #2e7d32;
+}
+
+.pfem__patch-code {
+  margin: 0;
   font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
   font-size: 0.9rem;
   color: #1b5e20;
-  margin: 1rem 0;
   line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-x: auto;
 }
 
 .pfem__details {
@@ -164,6 +219,10 @@ h1 {
   padding: 0.5rem;
   margin-top: 0.5rem;
   overflow-x: auto;
+}
+
+.pfem__details pre code {
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
 }
 
 .demo__error {
