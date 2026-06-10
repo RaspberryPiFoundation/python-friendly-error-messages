@@ -71,6 +71,7 @@ export type CopyDeck = {
     originalError?: string;
     error?: string;
     copydeckNotLoaded?: string;
+    suggestedFix?: string;
   };
 };
 

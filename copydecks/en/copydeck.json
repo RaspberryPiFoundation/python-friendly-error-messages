@@ -28,7 +28,8 @@
     "thisFile": "this file",
     "originalError": "Original error",
     "error": "Error",
-    "copydeckNotLoaded": "Copydeck not loaded"
+    "copydeckNotLoaded": "Copydeck not loaded",
+    "suggestedFix": "Suggested fix"
   },
   "errors": {
     "NameError": {

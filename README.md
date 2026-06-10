@@ -1,8 +1,5 @@
 # Python Friendly Error Messages
 
-Todo:
-- Accessibility of output HTML
-
 A small library that explains Python error messages in a friendlier way, inspired by [p5.js's Friendly Error System](https://p5js.org/contribute/friendly_error_system/).
 
 It can be used in browser-based editors (like RPF's [Code Editor web component](https://github.com/RaspberryPiFoundation/editor-ui)) or any environment that executes Python code through Pyodide or Skulpt.
@@ -68,6 +65,23 @@ const result = friendlyExplain({
 ```
 
 See the [demo](docs/README.md) for a full set of examples.
+
+## Accessibility
+
+`result.html` is built to be accessible by default (with WCAG 2.1 AA in mind):
+
+- The whole explanation is one labelled group — `<div class="pfem" role="group" lang="…" aria-labelledby="…">`, named by its title, with `lang` taken from the copydeck so screen readers pronounce localised copy correctly (`3.1.2 Language of Parts`). `role="group"` (not a landmark) keeps things uncluttered when several explanations render on one page
+- The title is deliberately not a heading. Heading level depends on the surrounding page outline, which a library can't know, so the title supplies the group's accessible name instead. If you want it in your heading outline, render your own heading from `result.title` and use `result.html` (or the structured fields) for the body
+- Code is marked up as code; inline tokens use `<code>` and blocks use `<pre><code>`
+- The suggested fix has a visible "Suggested fix" label; the original traceback stays in a native `<details>`/`<summary>`
+- Element ids are randomised per call so `aria-labelledby` remains unambiguous when multiple explanations coexist on a page
+
+### Your responsibilities
+
+A couple of WCAG 2.1AA requirements can only be met by the host app:
+
+- Announce it: the explanation appears in response to running code. For a screen reader to announce it without stealing focus, insert it into a pre-existing live region (`aria-live="polite"` / `role="status"`) that is already in the DOM, or move focus to it
+- Contrast & colour: all styling is yours, ensure text contrast, and don't rely on colours (`.pfem__var`, `.pfem__file`, …) alone to convey meaning
 
 ## Development
 

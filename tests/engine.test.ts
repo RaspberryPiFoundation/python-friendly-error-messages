@@ -141,23 +141,41 @@ NameError: name 'kittens' is not defined`;
     res.steps?.forEach((s) => expect(s).not.toMatch(/<[^>]+>/));
   });
 
-  it("html output wraps {{name}} in pfem__var span", () => {
+  it("html output wraps {{name}} in a pfem__var <code> element", () => {
     const code = `print("Hello")\nprint(kittens)\n`;
     const raw = `Traceback (most recent call last):
   File "main.py", line 2, in <module>
 NameError: name 'kittens' is not defined`;
     const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
-    expect(res.html).toContain('<span class="pfem__var">kittens</span>');
+    expect(res!.html).toContain('<code class="pfem__var">kittens</code>');
   });
 
-  it("html output wraps {{loc}} line and file in separate spans", () => {
+  it("html output wraps {{loc}} line (span) and file (code)", () => {
     const code = `print("Hello")\nprint(kittens)\n`;
     const raw = `Traceback (most recent call last):
   File "main.py", line 2, in <module>
 NameError: name 'kittens' is not defined`;
     const res = friendlyExplain({ error: raw, code, runtime: "skulpt" });
-    expect(res.html).toContain('<span class="pfem__line">');
-    expect(res.html).toContain('<span class="pfem__file">main.py</span>');
+    expect(res!.html).toContain('<span class="pfem__line">');
+    expect(res!.html).toContain('<code class="pfem__file">main.py</code>');
+  });
+
+  it("wraps output in a labelled group with a unique id and lang", () => {
+    const code = `print("Hello")\nprint(kittens)\n`;
+    const raw = `Traceback (most recent call last):
+  File "main.py", line 2, in <module>
+NameError: name 'kittens' is not defined`;
+    const a = friendlyExplain({ error: raw, code, runtime: "skulpt" })!;
+    const b = friendlyExplain({ error: raw, code, runtime: "skulpt" })!;
+
+    // group wrapper with lang and an aria-labelledby pointing at the title's id
+    expect(a.html).toMatch(/^<div class="pfem" role="group" lang="en" aria-labelledby="pfem-[a-z0-9]+-title">/);
+    const titleId = a.html!.match(/aria-labelledby="(pfem-[a-z0-9]+-title)"/)![1];
+    expect(a.html).toContain(`<p class="pfem__title" id="${titleId}">`);
+
+    // ids differ between calls so multiple explanations on a page don't collide
+    const idOf = (h: string) => h.match(/aria-labelledby="(pfem-[a-z0-9]+-title)"/)![1];
+    expect(idOf(a.html!)).not.toBe(idOf(b.html!));
   });
 
   it("sections option limits html output to specified sections", () => {

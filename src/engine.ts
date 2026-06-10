@@ -14,6 +14,9 @@ const getUiString = (key: keyof NonNullable<CopyDeck["ui"]>, fallback: string): 
   return state.copy?.ui?.[key] || fallback;
 };
 
+// Short non-cryptographic id, unique enough to keep aria-labelledby references distinct when several explanations are rendered on the same page
+const uniqueId = () => `pfem-${Math.random().toString(36).slice(2, 8)}`;
+
 export const registerAdapter = (name: string, fn: (raw: string, code?: string) => Trace | null) =>
   (state.adapters[name] = fn);
 
@@ -31,11 +34,9 @@ const coerceTrace = (input: string | Error | Trace, code?: string, runtime?: str
 
   const raw = typeof input === "string" ? input : String((input as Error).stack || (input as Error).message || input);
   const parsed = adapter(raw, code);
-  // The error could not be parsed into a structured trace, so there is no friendly
-  // explanation to offer. Return null and let the caller fall back to the raw error.
+  // The error could not be parsed into a structured trace, so there is no friendly explanation to offer. Return null and let the caller fall back to the raw error
   if (!parsed) return null;
-  // The runtime-agnostic adapter leaves `runtime: "unknown"`; this adds the concrete
-  // runtime we dispatched on so the trace carries the correct label
+  // The runtime-agnostic adapter leaves `runtime: "unknown"`; this adds the concrete runtime we dispatched on so the trace carries the correct label
   parsed.runtime = runtime as Runtime;
   return parsed;
 };
@@ -74,15 +75,15 @@ const pickVariant = (trace: Trace, code: string | undefined, sections?: Section[
   };
 
   const linePart = trace.line ? `<span class="pfem__line">${escapeHtml(lineStr)} ${escapeHtml(String(trace.line))}</span>` : null;
-  const filePart = trace.file ? `<span class="pfem__file">${escapeHtml(trace.file)}</span>` : null;
+  const filePart = trace.file ? `<code class="pfem__file">${escapeHtml(trace.file)}</code>` : null;
   const htmlLoc =
     linePart && filePart ? `${linePart} ${escapeHtml(inStr)} ${filePart}` :
     linePart ?? filePart ?? escapeHtml(thisFileStr);
 
   const htmlTransforms: Record<string, (v: string) => string> = {
-    name:     (v) => `<span class="pfem__var">${escapeHtml(v)}</span>`,
+    name:     (v) => `<code class="pfem__var">${escapeHtml(v)}</code>`,
     loc:      (_) => htmlLoc,
-    codeLine: (v) => `<span class="pfem__code">${escapeHtml(v)}</span>`,
+    codeLine: (v) => `<code class="pfem__code">${escapeHtml(v)}</code>`,
   };
 
   for (let i = 0; i < entry.variants.length; i++) {
@@ -115,16 +116,22 @@ const pickVariant = (trace: Trace, code: string | undefined, sections?: Section[
     }
 
     const has = (s: Section) => !sections || sections.includes(s);
-    const html = [
-      has("title")   ? `<div class="pfem__title">${titleHtml}</div>` : "",
-      has("summary") ? `<div class="pfem__summary">${summaryHtml}</div>` : "",
-      has("why")     && whyHtml ? `<div class="pfem__why">${whyHtml}</div>` : "",
+    const id = uniqueId();
+    const lang = deck?.meta.language ?? "en";
+    const inner = [
+      has("title")   ? `<p class="pfem__title" id="${id}-title">${titleHtml}</p>` : "",
+      has("summary") ? `<p class="pfem__summary">${summaryHtml}</p>` : "",
+      has("why")     && whyHtml ? `<p class="pfem__why">${whyHtml}</p>` : "",
       has("steps")   && stepsHtml?.length ? `<ul class="pfem__steps">${stepsHtml.map((s) => `<li>${s}</li>`).join("")}</ul>` : "",
-      has("patch")   && patch ? `<pre class="pfem__patch">${escapeHtml(patch)}</pre>` : "",
-      has("details") ? `<details class="pfem__details"><summary>${escapeHtml(getUiString("originalError", "Original error"))}</summary><pre>${escapeHtml(
+      has("patch")   && patch ? `<div class="pfem__patch"><p class="pfem__patch-label">${escapeHtml(getUiString("suggestedFix", "Suggested fix"))}</p><pre class="pfem__patch-code"><code>${escapeHtml(patch)}</code></pre></div>` : "",
+      has("details") ? `<details class="pfem__details"><summary>${escapeHtml(getUiString("originalError", "Original error"))}</summary><pre><code>${escapeHtml(
         (trace.type || getUiString("error", "Error")) + ": " + trace.message
-      )}</pre></details>` : "",
+      )}</code></pre></details>` : "",
     ].filter(Boolean).join("\n");
+
+    // Wrap in a single labelled group so a screen reader perceives one explanation as a named unit
+    const labelledBy = has("title") ? ` aria-labelledby="${id}-title"` : "";
+    const html = `<div class="pfem" role="group" lang="${escapeHtml(lang)}"${labelledBy}>\n${inner}\n</div>`;
 
     return {
       variantId: `${kind}/variants/${i}`,
@@ -145,17 +152,15 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult | null => {
   const code = opts.code;
 
   const trace = coerceTrace(opts.error, code, opts.runtime);
-  // The error could not be parsed — no friendly explanation; caller uses the raw error.
+  // The error could not be parsed — no friendly explanation; caller uses the raw error
   if (!trace) return null;
 
   // Caller-provided file/line take precedence over whatever was parsed from the trace
-  // Useful when the traceback's innermost frame references an internal file (eg.
-  // Pyodide's "<exec>") instead of the user's filename, or when the line needs correcting.
+  // Useful when the traceback's innermost frame references an internal file (eg. Pyodide's "<exec>") instead of the user's filename, or when the line needs correcting
   if (opts.file !== undefined) trace.file = opts.file;
   if (opts.line !== undefined) trace.line = opts.line;
 
-  // (Re)derive the code context from the effective line: when the caller overrides the
-  // line, or when a pre-parsed trace arrived without a codeLine.
+  // (Re)derive the code context from the effective line: when the caller overrides the line, or when a pre-parsed trace arrived without a codeLine
   if (code && trace.line && (opts.line !== undefined || !trace.codeLine)) {
     const lines = code.split(/\r?\n/);
     trace.codeLine = lines[trace.line - 1]?.trim();
@@ -164,8 +169,7 @@ export const friendlyExplain = (opts: ExplainOptions): ExplainResult | null => {
   }
 
   const chosen = pickVariant(trace, code, opts.sections);
-  // No copydeck entry/variant matched this error. Return null so the caller can fall
-  // back to showing the raw Python/Pyodide error as-is, rather than synthetic copy.
+  // No copydeck entry/variant matched this error. Return null so the caller can fall back to showing the raw Python/Pyodide error as-is
   if (!chosen) return null;
 
   return { trace, ...chosen };
