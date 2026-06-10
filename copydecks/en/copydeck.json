@@ -4,7 +4,7 @@
     "version": 1
   },
 
-  "glossary": {
+  "glossaryForTranslators": {
     "about": "Tokens written as {{token_name}} are filled in automatically at render time with real values from the Python error. You may move them to suit your language's word order, but do not translate, rename, or remove them. No HTML is needed around them as styling is applied automatically. Keys starting with _ are metadata for translators - do not translate or modify them.",
     "tokens": {
       "name": {
@@ -36,35 +36,35 @@
       "variants": [
         {
           "if": {
-            "not_message": ["is not defined"]
+            "match_message": ["cannot access free variable", "not associated with a value"]
           },
-          "title": "This variable doesn't exist yet",
-          "summary": "Your code uses the variable {{name}}, but it hasn't been created yet. Check {{loc}}. If you meant to print the text {{name}}, put it in double quotes.",
-          "why": "Without speech marks Python treats {{name}} as a variable, and this variable does not exist yet.",
+          "title": "Variable used before it gets a value here",
+          "summary": "{{name}} is used at {{loc}} before it has been given a value in the function that surrounds it. It is set later, but not before it is used.",
+          "why": "A variable from an enclosing function only becomes available once the line that assigns it has run. Using it earlier - for example from an inner function that runs first - leaves it without a value.",
           "steps": [
-            "If it is meant to be text, put speech marks around {{name}}.",
-            "If it is meant to be a variable, make it first (for example: {{name}} = 0).",
-            "Check spelling and capital letters."
+            "Give {{name}} a value before the line that uses it.",
+            "If an inner function needs it, pass the value in as an argument instead of relying on the enclosing scope."
           ],
           "_placeholders": {
-            "name": "The undefined variable name, e.g. kittens",
-            "loc": "Where it was used, e.g. line 2 in main.py"
+            "name": "The enclosing-scope variable name, e.g. total",
+            "loc": "Where it was used, e.g. line 3 in main.py"
           }
         },
         {
           "if": {
             "match_message": ["is not defined"]
           },
-          "title": "This variable doesn't exist here",
-          "summary": "{{name}} might be created somewhere else, but you're using it at {{loc}}. If you meant the text {{name}}, put it in double quotes.",
-          "why": "A variable created in another place might not be available here.",
+          "title": "This variable doesn't exist yet",
+          "summary": "Your code uses the variable {{name}}, but this hasn't been created yet. Check {{loc}}. If you meant to print the text {{name}}, put it in double quotes.",
+          "why": "Without speech marks Python treats {{name}} as a variable and this variable does not exist yet.",
           "steps": [
-            "Move the line that makes it to above where you use it.",
-            "Or set it here just before you use it."
+            "If it is meant to be text put speech marks around {{name}}.",
+            "If it is meant to be a variable make it first (for example: {{name}} = 0).",
+            "Check spelling and capital letters."
           ],
           "_placeholders": {
-            "name": "The variable name used out of scope, e.g. total",
-            "loc": "Where it was referenced, e.g. line 8 in main.py"
+            "name": "The undefined variable name, e.g. kittens",
+            "loc": "Where it was used, e.g. line 2 in main.py"
           }
         }
       ]

@@ -1,6 +1,6 @@
 export const examples = [
   {
-    title: "NameError - Variable Not Created Yet",
+    title: "NameError - Variable Used Before Assignment (enclosing scope)",
     runtime: "pyodide",
     expectedVariantId: "NameError/variants/0",
     code: `def outer():
@@ -18,7 +18,7 @@ outer()`,
 NameError: cannot access free variable 'total' where it is not associated with a value in enclosing scope`
   },
   {
-    title: "NameError - Variable Not Defined Here",
+    title: "NameError - Variable Not Defined",
     runtime: "pyodide",
     expectedVariantId: "NameError/variants/1",
     code: `print("Hello")

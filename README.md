@@ -91,9 +91,11 @@ In brief:
 
 ```bash
 npm install
-npm run build -- --watch
+npm run dev:build   # watch and build everything
 npm test
 ```
+
+For a one-off full build use: `npm run build:all`
 
 ### Copydecks
 
