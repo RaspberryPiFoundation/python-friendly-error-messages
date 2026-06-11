@@ -11,7 +11,7 @@ const copydeck = {
           title: "This name doesn't exist yet",
           summary: "Your code uses \"{{name}}\", but it hasn't been created yet. Check {{loc}}.",
           why: "Python needs to see a line that creates \"{{name}}\" before you use it.",
-          steps: ["Make it first (e.g. {{name}} = 0).", "Check spelling."]
+          steps: ["Make it first (eg. {{name}} = 0).", "Check spelling."]
         },
         {
           if: { match_message: ["is not defined"] },
@@ -46,7 +46,7 @@ const copydeck = {
           steps: ["Use list.append(value)."]
         },
         {
-          title: "This thing doesn't have that name after the dot",
+          title: "This object doesn't have that name after the dot",
           summary: "No such attribute.",
           steps: ["Check spelling."]
         }
@@ -67,7 +67,7 @@ ValueError: invalid literal for int() with base 10: 'abc'`;
     expect(res).toBeNull();
   });
 
-  it("lets caller-provided file/line override the trace (e.g. Pyodide's <exec>)", () => {
+  it("lets caller-provided file/line override the trace (eg. Pyodide's <exec>)", () => {
     const code = `for i in range(3)\n  print(i)`;
     const raw = `Traceback (most recent call last):
   File "/lib/python312.zip/_pyodide/_base.py", line 148, in _parse_and_compile_gen

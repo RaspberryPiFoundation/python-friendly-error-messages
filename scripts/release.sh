@@ -12,7 +12,7 @@
 # including a 2FA OTP prompt if enabled) and `gh auth login` (for the release).
 #
 # Keep this script ASCII-only and brace every "${var}" reference. Under `set -u`,
-# a $var directly abutting a multibyte character (e.g. an ellipsis) is parsed as
+# a $var directly abutting a multibyte character (eg. an ellipsis) is parsed as
 # part of the variable name and crashes with "unbound variable".
 
 set -euo pipefail
@@ -68,7 +68,7 @@ npm run build:all
 
 # --- Bump + tag (local only so far) -----------------------------------------
 # npm version updates package.json + package-lock.json, commits, and tags vX.Y.Z.
-newtag="$(npm version "${bump}" -m "Release v%s")"   # prints e.g. "v0.4.0"
+newtag="$(npm version "${bump}" -m "Release v%s")"   # prints eg. "v0.4.0"
 echo "Bumped ${current} -> ${newtag}"
 
 # --- Publish to npm ---------------------------------------------------------

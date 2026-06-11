@@ -7,7 +7,7 @@ the result to a JSON file. The original if_condition and any other metadata are
 preserved from the source copydeck - reviewers cannot change match logic.
 
 The reader tolerates the mutations a spreadsheet round-trip introduces:
-  * blank rows above the header (e.g. a frozen spacer row)
+  * blank rows above the header (eg. a frozen spacer row)
   * header capitalisation ("Title", "Error_type", "Step_1", ...)
   * extra columns added by reviewers (ID, links, status flags), in any order
 

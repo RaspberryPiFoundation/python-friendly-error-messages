@@ -10,7 +10,7 @@ The demo shows how the library transforms common Python error traces (from both 
 
 - **NameError**: Undefined variables
 - **SyntaxError**: Missing colons and syntax issues
-- **AttributeError**: Wrong method names (e.g., `.push()` instead of `.append()`)
+- **AttributeError**: Wrong method names (eg., `.push()` instead of `.append()`)
 - **TypeError**: Type mismatches
 - **UnboundLocalError**: Variables used before assignment
 - **IndexError**: List index out of range

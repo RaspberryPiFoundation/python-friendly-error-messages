@@ -46,8 +46,8 @@
             "If an inner function needs it, pass the value in as an argument instead of relying on the enclosing scope."
           ],
           "_placeholders": {
-            "name": "The enclosing-scope variable name, e.g. total",
-            "loc": "Where it was used, e.g. line 3 in main.py"
+            "name": "The enclosing-scope variable name, eg. total",
+            "loc": "Where it was used, eg. line 3 in main.py"
           }
         },
         {
@@ -63,8 +63,8 @@
             "Check spelling and capital letters."
           ],
           "_placeholders": {
-            "name": "The undefined variable name, e.g. kittens",
-            "loc": "Where it was used, e.g. line 2 in main.py"
+            "name": "The undefined variable name, eg. kittens",
+            "loc": "Where it was used, eg. line 2 in main.py"
           }
         }
       ]
@@ -80,8 +80,8 @@
             "Give it a value first (add a line like {{name}} = ... before you use it)."
           ],
           "_placeholders": {
-            "name": "The variable used before assignment, e.g. score",
-            "loc": "Where it was read before being set, e.g. line 4 in main.py"
+            "name": "The variable used before assignment, eg. score",
+            "loc": "Where it was read before being set, eg. line 4 in main.py"
           }
         }
       ]
@@ -101,8 +101,8 @@
             "Add a colon (:) at the end of that line."
           ],
           "_placeholders": {
-            "loc": "Where the missing colon is, e.g. line 3 in main.py",
-            "codeLine": "The line that needs the colon, e.g. for i in range(10)"
+            "loc": "Where the missing colon is, eg. line 3 in main.py",
+            "codeLine": "The line that needs the colon, eg. for i in range(10)"
           }
         },
         {
@@ -116,8 +116,8 @@
             "Replace the comma with a colon (:)."
           ],
           "_placeholders": {
-            "loc": "Where the comma is, e.g. line 1 in main.py",
-            "codeLine": "The line ending with a comma, e.g. if score > 10,"
+            "loc": "Where the comma is, eg. line 1 in main.py",
+            "codeLine": "The line ending with a comma, eg. if score > 10,"
           }
         },
         {
@@ -131,8 +131,8 @@
             "Leave only one colon (:) at the end of the line."
           ],
           "_placeholders": {
-            "loc": "Where the extra colon is, e.g. line 2 in main.py",
-            "codeLine": "The line with double colons, e.g. if x > 0::"
+            "loc": "Where the extra colon is, eg. line 2 in main.py",
+            "codeLine": "The line with double colons, eg. if x > 0::"
           }
         },
         {
@@ -200,8 +200,8 @@
             "Keep = for setting a variable value outside comparisons."
           ],
           "_placeholders": {
-            "loc": "Where the = is used in a condition, e.g. line 6 in main.py",
-            "codeLine": "The condition line, e.g. if score = 10:"
+            "loc": "Where the = is used in a condition, eg. line 6 in main.py",
+            "codeLine": "The condition line, eg. if score = 10:"
           }
         },
         {
@@ -240,7 +240,7 @@
             "Line up all lines in the block."
           ],
           "_placeholders": {
-            "loc": "Where the indentation problem is, e.g. line 7 in main.py"
+            "loc": "Where the indentation problem is, eg. line 7 in main.py"
           }
         }
       ]
@@ -276,13 +276,18 @@
           ]
         },
         {
-          "title": "This thing doesn't have that name after the dot",
-          "summary": "The thing you're using doesn't have that attribute or method.",
-          "why": "That kind of thing doesn't provide this feature.",
+          "title": "That name after the dot isn't available for this value",
+          "summary": "At {{loc}}, {{codeLine}} uses a name after the dot that this kind of value doesn't have. It might be a typo, or a method that belongs to a different type of value.",
+          "why": "After a dot, Python looks for a method or property that belongs to that exact kind of value - a string, a list, a number, and so on. If that kind of value has nothing by that name, you get this error.",
           "steps": [
-            "Check the spelling after the dot.",
-            "Use a name that exists for this kind of thing."
-          ]
+            "Check the spelling and capital letters of the name after the dot.",
+            "Make sure the value is the kind you expect - for example a list has .append(), but a string does not.",
+            "Look up which methods that kind of value supports, and use one of those."
+          ],
+          "_placeholders": {
+            "loc": "Where the attribute was used, eg. line 2 in main.py",
+            "codeLine": "The line with the dotted access, eg. name.shrink()"
+          }
         }
       ]
     },
