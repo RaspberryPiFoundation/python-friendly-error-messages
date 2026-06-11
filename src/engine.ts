@@ -104,7 +104,7 @@ const pickVariant = (trace: Trace, code: string | undefined, sections?: Section[
     let patch: string | undefined = undefined;
     if (trace.type === "AttributeError" && /\.push\s*\(/i.test(codeLine)) {
       patch = codeLine.replace(/\.push\s*\(/i, ".append(");
-    } else if (trace.type === "NameError" && trace.name) {
+    } else if (trace.type === "NameError" && trace.name && !/cannot access free variable|not associated with a value/i.test(trace.message || "")) {
       patch = `${trace.name} = 0\n${codeLine}`;
     } else if (trace.type === "SyntaxError" && /^(if|for|while|def|class|elif|else|try|except|with)\b/i.test(codeLine) && !/:$/.test(codeLine.trim())) {
       const trimmedCodeLine = codeLine.replace(/\s*$/, "");

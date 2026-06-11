@@ -4,14 +4,14 @@ A small library that explains Python error messages in a friendlier way, inspire
 
 It can be used in browser-based editors (like RPF's [Code Editor web component](https://github.com/RaspberryPiFoundation/editor-ui)) or any environment that executes Python code through Pyodide or Skulpt.
 
-This library is currently **Pyodide-first**. The copydeck and demos are developed and verified against a pinned Pyodide version (see [`docs/pyodide-config.js`](docs/pyodide-config.js)), and the demo runs that Pyodide build live to show real tracebacks. Skulpt is still supported, both runtimes emit CPython-style tracebacks and share one adapter, but it is not the current priority, so error coverage is tuned to Pyodide's messages first.
+This library is currently **Pyodide-first**. The copydeck and demos are developed and verified against a pinned Pyodide version (see [`docs/pyodide-config.js`](docs/pyodide-config.js)), and the demo runs that Pyodide build live to show real tracebacks. Skulpt is still supported, both runtimes emit CPython-style tracebacks and share one adapter, but it is not the current priority.
 
 ## Features
 
 - Parses and normalises errors from Pyodide or Skulpt (via a shared CPython-traceback adapter)
-- Matches errors against a copydeck (JSON rules and templates)
-- Copydeck-based explanations can be localised
-- Returns structured explanations as well as ready-made HTML snippets
+- Matches errors against a copydeck (containing rules and templates)
+- Copydeck-based explanations can be localised (and the copydeck contains prompts and context to help with this)
+- Returns structured explanations as well as ready-to-use HTML snippets
 
 ## Usage
 
@@ -65,6 +65,8 @@ const result = friendlyExplain({
 ```
 
 See the [demo](docs/README.md) for a full set of examples.
+
+*Note:* The "patch" section contains a suggested code change to fix the error, but should be considered experimental at this stage.
 
 ## Accessibility
 
