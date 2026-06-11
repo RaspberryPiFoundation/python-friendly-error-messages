@@ -6,6 +6,6 @@
     "prepare-demo": "mkdir -p ./vendor/python-friendly-error-messages && cp ./node_modules/@raspberrypifoundation/python-friendly-error-messages/dist/index.browser.js ./vendor/python-friendly-error-messages/index.browser.js"
   },
   "dependencies": {
-    "@raspberrypifoundation/python-friendly-error-messages": "^0.7.0"
+    "@raspberrypifoundation/python-friendly-error-messages": "^0.7.1"
   }
 }
