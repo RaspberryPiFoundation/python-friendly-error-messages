@@ -72,10 +72,11 @@ See the [demo](docs/README.md) for a full set of examples.
 
 `result.html` is built to be accessible by default (with WCAG 2.1 AA in mind):
 
-- The whole explanation is one labelled group: `<div class="pfem" role="group" lang="…" aria-labelledby="…">`, named by its title, with `lang` taken from the copydeck so screen readers pronounce localised copy correctly (`3.1.2 Language of Parts`). `role="group"` (not a landmark) keeps things uncluttered when several explanations render on one page
-- The title is deliberately not a heading. Heading level depends on the surrounding page outline, which a library can't know, so the title supplies the group's accessible name instead. If you want it in your heading outline, render your own heading from `result.title` and use `result.html` (or the structured fields) for the body
-- Code is marked up as code; inline tokens use `<code>` and blocks use `<pre><code>`
-- The suggested fix has a visible "Suggested fix" label; the original traceback stays in a native `<details>`/`<summary>`
+- The whole explanation is one labelled group: `<div class="pfem" role="group" lang="…" aria-labelledby="…">`, named by its title, with `lang` taken from the copydeck so screen readers pronounce localised copy correctly
+  - `role="group"` keeps things uncluttered when several explanations render on one page
+- The title is deliberately not a heading, the title supplies the group's accessible name instead. If you want an actual heading, render your own from `result.title` and use `result.html` (or the structured fields) for the body
+- Code is marked up as such; inline tokens use `<code>` and blocks use `<pre><code>`
+- The suggested fix has a visible "Suggested fix" label; the original traceback stays in `<details>`/`<summary>`
 - Element ids are randomised per call so `aria-labelledby` remains unambiguous when multiple explanations coexist on a page
 
 ### Your responsibilities
