@@ -35,15 +35,15 @@
     "NameError": {
       "variants": [
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_message": ["cannot access free variable", "not associated with a value"]
           },
-          "title": "Variable used before it gets a value here",
-          "summary": "{{name}} is used at {{loc}} before it has been given a value in the function that surrounds it. It is set later, but not before it is used.",
-          "why": "A variable from an enclosing function only becomes available once the line that assigns it has run. Using it earlier - for example from an inner function that runs first - leaves it without a value.",
+          "title": "Variable used before it is given a value",
+          "summary": "The variable {{name}} is used at {{loc}} before it has been given a value. The code that gives it a value has not been run yet.",
+          "why": "You can only use a variable after it has been given a value. In nested functions (functions inside other functions), an inner function can only use a variable from the outer function if that value has already been set. To avoid this problem, give variables an initial value before using them elsewhere in your code.",
           "steps": [
-            "Give {{name}} a value before the line that uses it.",
-            "If an inner function needs it, pass the value in as an argument instead of relying on the enclosing scope."
+            "Give {{name}}a value before the inner function tries to use it."
           ],
           "_placeholders": {
             "name": "The enclosing-scope variable name, eg. total",
@@ -51,16 +51,17 @@
           }
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_message": ["is not defined"]
           },
-          "title": "This variable doesn't exist yet",
-          "summary": "Your code uses the variable {{name}}, but this hasn't been created yet. Check {{loc}}. If you meant to print the text {{name}}, put it in double quotes.",
-          "why": "Without speech marks Python treats {{name}} as a variable and this variable does not exist yet.",
+          "title": "Variable does not exist",
+          "summary": "The variable {{name}} is used at {{loc}} , but it does not exist.",
+          "why": "Python treats {{name}} as a variable. Before you can use a variable, you must give it a value. If you want the word {{name}} to appear as text, put it inside quotes.",
           "steps": [
-            "If it is meant to be text put speech marks around {{name}}.",
-            "If it is meant to be a variable make it first (for example: {{name}} = 0).",
-            "Check spelling and capital letters."
+            "If {{name}} is meant to be text, put it in quotes.",
+            "If {{name}} is meant to be a variable, create it before you use it.",
+            "Check that the spelling and capital letters match everywhere you use {{name}}."
           ],
           "_placeholders": {
             "name": "The undefined variable name, eg. kittens",
@@ -73,11 +74,12 @@
     "UnboundLocalError": {
       "variants": [
         {
-          "title": "Variable used before it gets a value in this part of the code",
-          "summary": "Here, {{name}} is used at {{loc}} before you give it a value.",
-          "why": "You have used the variable before it has been given a value. If used within a subroutine, the variable must either be global and given a value outside the subroutine definition, or local and given a value inside the subroutine, before it is used. ",
+          "_lastReviewed": "2026-06-29",
+          "title": "Variable used before it is given a value",
+          "summary": "The variable {{name}} is being used on line {{loc}} before it has been given a value.",
+          "why": "You can only use a variable after it has been given a value. Here, your code is trying to use {{name}} but it does not have a value yet. If {{name}} is created inside another function, pass its value into this function before using it.",
           "steps": [
-            "Give it a value first (add a line like {{name}} = ... before you use it)."
+            "Give {{name}} a value before the line that uses it."
           ],
           "_placeholders": {
             "name": "The variable used before assignment, eg. score",
@@ -90,15 +92,16 @@
     "SyntaxError": {
       "variants": [
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_code": ["^(\\s*)(if|for|while|def|class|elif|else|try|except|with)\\b"],
             "not_code": [":\\s*$", ",\\s*$"]
           },
-          "title": "Missing colon (:) at the end",
-          "summary": "There is a colon (:) missing at the end of a line. Check {{loc}}: {{codeLine}}",
-          "why": "In Python constructs like if statements, for loops and while loops must have a colon at the end of their first line.",
+          "title": "Missing colon (:) at line end",
+          "summary": "A colon (:) is missing from the end of line {{loc}}.",
+          "why": "Some Python statements need a colon (:) at the end of the line. This includes if statements, for loops, while loops, and function definitions. Python uses the colon to show that a block of indented code follows.",
           "steps": [
-            "Add a colon (:) at the end of that line."
+            "Add a colon (:) to the end of line {{loc}}."
           ],
           "_placeholders": {
             "loc": "Where the missing colon is, eg. line 3 in main.py",
@@ -106,14 +109,15 @@
           }
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_code": ["^(\\s*)(if|for|while|def|class|elif|else|try|except|with)\\b.*?,\\s*$"]
           },
-          "title": "Comma used where a colon is needed",
-          "summary": "This line ends with a comma, but this kind of Python line should end with a colon (:). Check {{loc}}: {{codeLine}}",
-          "why": "Lines that start a block (like if or for) need a colon, not a comma.",
+          "title": "Comma used where a colon (:) is needed",
+          "summary": "Line {{loc}} ends with a comma, but it should end with a colon (:).",
+          "why": "Some Python statements need a colon (:) at the end of the line. This includes if statements, for loops, while loops, and function definitions. Python uses the colon to show that a block of indented code follows. A comma cannot be used instead of a colon.",
           "steps": [
-            "Replace the comma with a colon (:)."
+            "Replace the comma at the end of line {{loc}} with a colon (:)."
           ],
           "_placeholders": {
             "loc": "Where the comma is, eg. line 1 in main.py",
@@ -121,14 +125,15 @@
           }
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_code": ["^(\\s*)(if|for|while|def|class|elif|else|try|except|with)\\b.*::\\s*$"]
           },
-          "title": "Too many colons at the end",
-          "summary": "This line ends with more than one colon. Check {{loc}}: {{codeLine}}",
-          "why": "A block-starting line needs exactly one colon at the end.",
+          "title": "Too many colons (:) at line end",
+          "summary": "Line {{loc}} ends with more than one colon. A single colon should be used.",
+          "why": "Some Python statements need a colon (:) at the end of the line. This includes if statements, for loops, while loops, and function definitions. These statements need exactly one colon. Extra colons will cause an error.",
           "steps": [
-            "Leave only one colon (:) at the end of the line."
+            "Remove any extra colons at the end of line {{loc}} so that only one remains."
           ],
           "_placeholders": {
             "loc": "Where the extra colon is, eg. line 2 in main.py",
@@ -136,68 +141,72 @@
           }
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_message": ["was never closed"]
           },
-          "title": "A bracket or parenthesis was not closed",
-          "summary": "One of your brackets, braces, or parentheses is open but never closes.",
-          "why": "Python needs every opening symbol like (, [ or { to have a matching closing symbol.",
+          "title": "A bracket, brace, or parenthesis was not closed",
+          "summary": "One of your brackets, braces, or parentheses has an opening symbol but no matching closing symbol.",
+          "why": "Python expects every opening symbol to have a matching closing symbol: ( matches ), [ matches ], { matches }. If one is missing, Python cannot work out where the code should end.",
           "steps": [
-            "Find the opening symbol that has no matching closing symbol.",
+            "Find the opening symbol that does not have a matching closing symbol.",
             "Add the missing closing symbol.",
-            "Check nearby lines as the opening symbol may be earlier."
+            "Check the lines above the error. The missing symbol may be earlier in your code."
           ]
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_message": ["does not match", "closing parenthesis", "closing bracket", "closing brace"]
           },
-          "title": "Closing bracket does not match the opening one",
+          "title": "The closing bracket does not match the opening bracket",
           "summary": "A closing symbol was used, but it does not match the opening symbol.",
-          "why": "Each opening symbol must be closed by the same kind: () [] or {}.",
+          "why": "Every opening symbol must be closed with the matching closing symbol: ( matches ), [ matches ], { matches }. For example, if you start with (, you must end with ). Using a different closing symbol will cause an error.",
           "steps": [
-            "Find the opening symbol first.",
-            "Change the closing symbol so it matches.",
-            "Check that symbols are in the correct order."
+            "Find the opening symbol.",
+            "Check that the closing symbol matches it.",
+            "Check that the symbols are in the correct order and that none are missing. If there are several pairs of brackets, start with the innermost pair and work outwards."
           ]
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_message": ["unterminated string literal", "EOL while scanning string literal"]
           },
           "title": "A string was started but not finished",
-          "summary": "A string opens with a quote mark but does not close.",
-          "why": "Text in Python must have matching opening and closing quotes.",
+          "summary": "A piece of text starts with a quote mark but does not have a matching closing quote mark.",
+          "why": "In Python, text (called a string) must start and end with matching quote marks. If the closing quote mark is missing, Python cannot tell where the text ends.",
           "steps": [
-            "Find the string that starts but does not end.",
+            "Find the text that starts with a quote mark but does not end with one.",
             "Add the missing quote mark.",
-            "Use matching quote marks around the text."
+            "Check that the opening and closing quote marks match (\" with \" or ' with ')."
           ]
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_message": ["perhaps you forgot a comma"]
           },
           "title": "A comma is missing between items",
-          "summary": "Python expected a comma between values, but did not find one.",
-          "why": "Lists, dictionaries, tuples, and function arguments need commas to separate each item.",
+          "summary": "Python expected a comma between two items, but could not find one.",
+          "why": "When you put several items together, Python uses commas to separate them. If a comma is missing, Python cannot tell where one item ends and the next one begins. This often happens in lists, function calls, and other places where several values are grouped together.",
           "steps": [
-            "Check where two values are next to each other.",
+            "Look for two values that are next to each other without a comma between them.",
             "Add a comma between each separate item.",
-            "Run the code again to check for the next issue."
+            "Run your code again to check for any other problems."
           ]
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_code": ["^(\\s*)(if|elif|while)\\b.*="],
             "not_code": ["==", "<=", ">=", "!="]
           },
-          "title": "Assignment used instead of comparison",
-          "summary": "This condition uses =, but conditions must compare values. Check {{loc}}: {{codeLine}}",
-          "why": "In conditions, = sets a value, but == compares values.",
+          "title": "Assignment used instead of comparison operator",
+          "summary": "This condition uses =, but conditions need == to compare values. Check line {{loc}} : {{codeLine}}.",
+          "why": "In Python, = and == do different jobs. = gives a variable a value, == checks whether two values are the same. Conditions in if, elif, and while statements must use == when checking for equality.",
           "steps": [
-            "Use == to compare values in if, elif, or while conditions.",
-            "Keep = for setting a variable value outside comparisons."
+            "Replace = with == if you want to compare two values."
           ],
           "_placeholders": {
             "loc": "Where the = is used in a condition, eg. line 6 in main.py",
@@ -205,25 +214,27 @@
           }
         },
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_code": ["\\+\\+|--"]
           },
-          "title": "This operator is not valid in Python",
-          "summary": "This line contains ++ or --, which Python does not use.",
-          "why": "Python does not have increment/decrement operators like some other languages.",
+          "title": "Operator is not valid in Python",
+          "summary": "Line {{loc}} contains ++ or --, but Python does not use these operators.",
+          "why": "In some programming languages, ++ increases a value by 1 and -- decreases a value by 1. Python does not use ++ or --. Instead, use += 1 to add 1 to a variable or -= 1 to subtract 1.",
           "steps": [
-            "Use += 1 to increase a value by one.",
-            "Use -= 1 to decrease a value by one."
+            "Replace ++ with += 1 if you want to increase a value by 1.",
+            "Replace -- with -= 1 if you want to decrease a value by 1."
           ]
         },
         {
-          "title": "The line is incomplete or mismatched",
-          "summary": "Something is missing or extra - like a colon, bracket, or quote.",
-          "why": "If (), [], {}, :, or quotes don't match, Python can't read the line.",
+          "_lastReviewed": "2026-06-29",
+          "title": "Something is missing or extra on this line",
+          "summary": "Something is missing or extra on this line, such as a colon, bracket, or quote mark.",
+          "why": "Python needs symbols like (), [], {}, :, and quotes to be used correctly. If one is missing, extra, or in the wrong place, Python may not be able to read the line.",
           "steps": [
-            "Make (), [], and {} come in matching pairs.",
-            "Add the missing colon (:).",
-            "Use matching opening and closing quotes."
+            "Check that (), [], and {} are in matching pairs.",
+            "Add a missing colon (:) if the line needs one.",
+            "Check that text starts and ends with matching quotes."
           ]
         }
       ]
@@ -232,13 +243,14 @@
     "IndentationError": {
       "variants": [
         {
-          "title": "The indentation isn't right here",
-          "summary": "Python uses the spaces at the start of a line to group code into blocks, and the spacing around {{loc}} doesn't fit. A line may be indented when it shouldn't be, or missing the indentation a block needs.",
-          "why": "Lines in the same block must start in the same column, a block only opens after a line ending in a colon (:), and a line can't be indented for no reason.",
+          "_lastReviewed": "2026-06-29",
+          "title": "The indentation is not correct",
+          "summary": "The spaces at the start of the line do not match the code around it. Check line {{loc}} and the surrounding lines.",
+          "why": "Python uses spaces at the start of a line to show which lines belong together. Lines in the same block should start in the same place. A new block usually starts after a line ending with a colon (:). If the spaces are missing, or if there are too many, Python cannot work out which lines belong together.",
           "steps": [
-            "If a line is indented but nothing above it ends in a colon (:), remove the extra spaces.",
-            "If a block was expected (after a line ending in :), indent its lines by the same amount.",
-            "Keep spacing consistent - 4 spaces per level - and don't mix tabs and spaces."
+            "If a line is indented but the line above does not end with a colon (:), remove the extra spaces.",
+            "If the line belongs inside a block, add the same indentation as the other lines in that block.",
+            "Keep the indentation consistent. A common choice is 4 spaces for each level of indentation."
           ],
           "_placeholders": {
             "loc": "Where the indentation problem is, eg. line 7 in main.py"
@@ -250,12 +262,14 @@
     "TypeError": {
       "variants": [
         {
-          "title": "These data types don't work together",
-          "summary": "You're joining (concatenating) different kinds of data types. For example, a number (integer or float) and a word (string).",
-          "why": "Python's + means 'add' for numbers and 'join' for text, so both sides have to be the same kind. It can't add a number to a piece of text.",
+          "_lastReviewed": "2026-06-29",
+          "title": "These types of data cannot be joined",
+          "summary": "This code is trying to join (concatenate) different types of data, such as a number and some text.",
+          "why": "Python treats numbers and text differently. The + symbol can: add numbers together, join pieces of text together. Both sides of + must be the same type. For example, Python cannot add a number to text.",
           "steps": [
-            "To join them as text, convert the number with str(...).",
-            "To add them as numbers instead, make sure neither side is text."
+            "If you want to join them as text, convert the number using str(...).",
+            "If you want to add them as numbers, make sure neither value is text.",
+            "If you are trying to print a string that contains one of more values, you can use an f-string."
           ]
         }
       ]
@@ -264,26 +278,28 @@
     "AttributeError": {
       "variants": [
         {
+          "_lastReviewed": "2026-06-29",
           "if": {
             "match_code": ["\\.push\\s*\\("],
             "match_message": ["'push'"]
           },
-          "title": "Lists don't have that feature",
-          "summary": "You're calling a list method that doesn't exist.",
-          "why": "Lists use .append(value) or .extend([...]). There is no .push().",
+          "title": "Lists don't support that command",
+          "summary": "You're trying to use .push() with a list, but Python lists do not have a .push() command.",
+          "why": "Different programming languages use different commands for lists. Some languages use .push() to add an item to a list, but Python uses .append() instead. To add one item, use .append(). To add several items, use .extend().",
           "steps": [
-            "Use list.append(one_item).",
-            "Use list.extend([many, items])."
+            "Use .append(value) to add one item to a list.",
+            "Use .extend([item1, item2, ...]) to add several items at once."
           ]
         },
         {
-          "title": "That name after the dot isn't available for this value",
-          "summary": "At {{loc}}, {{codeLine}} uses a name after the dot that this kind of value doesn't have. It might be a typo, or a method that belongs to a different type of value.",
-          "why": "After a dot, Python looks for a method or property that belongs to that exact kind of value - a string, a list, a number, and so on. If that kind of value has nothing by that name, you get this error.",
+          "_lastReviewed": "2026-06-29",
+          "title": "That name cannot be used after the dot",
+          "summary": "At line {{loc}} in {{file}}, {{codeLine}} uses a name after the dot that cannot be used with this type of data.",
+          "why": "Different types of data have different names that can be used after a dot (.). Some of these are commands and some are values. For example, a list can use .append(), but a piece of text (a string) cannot. If Python cannot find the name after the dot, it may be spelled incorrectly or it may not work with this type of data.",
           "steps": [
             "Check the spelling and capital letters of the name after the dot.",
-            "Make sure the value is the kind you expect - for example a list has .append(), but a string does not.",
-            "Look up which methods that kind of value supports, and use one of those."
+            "Check that the data is the type you expect. For example, .append() works with lists, but not with text.",
+            "Use a command that works with that type of data."
           ],
           "_placeholders": {
             "loc": "Where the attribute was used, eg. line 2 in main.py",
@@ -296,12 +312,14 @@
     "IndexError": {
       "variants": [
         {
+          "_lastReviewed": "2026-06-29",
           "title": "This index position does not exist",
-          "summary": "You are trying to use an index position that does not exist. The list is not that long.",
-          "why": "Items are counted from 0. In myList = [\"A\", \"B\", \"C\"], \"A\" is at index 0, \"B\" at 1 and \"C\" at 2 - so the largest valid index is 2, and index 3 does not exist.",
+          "summary": "You are trying to use an index position that is outside the list.",
+          "why": "List indexes start at 0. The highest index value is one less than the length of the list. In this example:  my_list = [\"A\", \"B\", \"C\"], \"A\" is at index 0, \"B\" is at index 1, \"C\" is at index 2.",
           "steps": [
-            "Check the length with len(the_list).",
-            "Use an index position number smaller than len(the_list)."
+            "Check how many items are in the list using len(my_list).",
+            "Use an index that is smaller than the length of the list.",
+            "Remember that the first item is at index 0, not index 1."
           ]
         }
       ]
@@ -310,12 +328,14 @@
     "KeyError": {
       "variants": [
         {
-          "title": "That key isn't in the dictionary",
-          "summary": "You looked up a key that the dictionary doesn't have.",
-          "why": "The dictionary has no value for that key.",
+          "_lastReviewed": "2026-06-29",
+          "title": "The key isn't in the dictionary",
+          "summary": "You tried to use a key that the dictionary does not have.",
+          "why": "A dictionary stores values using keys. If you ask for a key that is not in the dictionary, Python cannot find a value for it.",
           "steps": [
-            "Check the exact key (spelling and capital letters).",
-            "It might be missing, use dictionary.get(key, default) or add the key."
+            "Check the spelling and capital letters of the key.",
+            "Check that the key has been added to the dictionary.",
+            "If the key might be missing, use .get(key, default) so your code has a backup value."
           ]
         }
       ]
@@ -324,11 +344,14 @@
     "ZeroDivisionError": {
       "variants": [
         {
+          "_lastReviewed": "2026-06-29",
           "title": "You can't divide by zero",
-          "summary": "You are trying to divide a number by zero, which is not possible.",
-          "why": "In mathematics, division by zero is undefined.",
+          "summary": "This calculation is trying to divide a number by 0.",
+          "why": "In mathematics, dividing by zero is not possible, so Python cannot work out the answer. This error often happens when a variable that is being used as a divisor has the value 0.",
           "steps": [
-            "Change the calculation so that you are not dividing a number by 0."
+            "Find the number (or variable) after the / symbol.",
+            "Check why that value is 0.",
+            "Change the calculation so that you are not dividing by 0."
           ]
         }
       ]
