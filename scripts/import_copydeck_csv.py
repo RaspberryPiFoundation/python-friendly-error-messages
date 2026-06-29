@@ -2,9 +2,10 @@
 """Import revised copy from a reviewed CSV back into a copydeck JSON.
 
 Reads a reviewed CSV (originally produced by export_copydeck_csv.py, then edited
-in a spreadsheet) and updates title/summary/why/steps for each variant, writing
-the result to a JSON file. The original if_condition and any other metadata are
-preserved from the source copydeck - reviewers cannot change match logic.
+in a spreadsheet) and updates title/summary/why/steps for each variant, plus the
+_lastReviewed date when a "Last reviewed" column is present, writing the result to
+a JSON file. The original if_condition and any other metadata are preserved from
+the source copydeck - reviewers cannot change match logic.
 
 The reader tolerates the mutations a spreadsheet round-trip introduces:
   * blank rows above the header (eg. a frozen spacer row)
@@ -12,10 +13,10 @@ The reader tolerates the mutations a spreadsheet round-trip introduces:
   * extra columns added by reviewers (ID, links, status flags), in any order
 
 Review gating:
-  If the CSV has a "reviewed" column (any header containing "reviewed"), only
-  rows marked TRUE are applied by default; unreviewed rows keep their current
-  copydeck wording. Pass --all to apply every row regardless, or --reviewed-only
-  to force gating (errors if the column is missing).
+  A row counts as reviewed when its "Last reviewed" column holds a date. By
+  default only those rows are applied; dateless rows keep their current copydeck
+  wording. Pass --all to apply every row regardless, or --reviewed-only to force
+  gating (errors if the column is missing).
 
 Usage:
     python scripts/import_copydeck_csv.py --csv copydeck-import_en.csv
@@ -25,13 +26,14 @@ Usage:
 import argparse
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 
 # Columns that must be present (after normalisation) for a row to be a header.
 REQUIRED = {"error_type", "variant_index", "title", "summary"}
-# Values (normalised) treated as "reviewed = yes".
-TRUTHY = {"true", "yes", "y", "1", "x", "✓", "checked", "done"}
+# Expected shape of the _lastReviewed date (ISO YYYY-MM-DD); warned on, not enforced.
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 def _norm(s: str) -> str:
@@ -74,11 +76,12 @@ def import_csv(csv_path: Path, copydeck_path: Path, out_path: Path, mode: str) -
 
     header, rows = read_rows(csv_path)
 
-    reviewed_col = next((h for h in header if "reviewed" in h), None)
-    if mode == "reviewed-only" and reviewed_col is None:
-        print("Error: --reviewed-only was set but no 'reviewed' column was found in the CSV.", file=sys.stderr)
+    # A row is "reviewed" when its Last reviewed column carries a date.
+    last_reviewed_col = next((h for h in header if "last" in h and "review" in h), None)
+    if mode == "reviewed-only" and last_reviewed_col is None:
+        print("Error: --reviewed-only was set but no 'Last reviewed' column was found in the CSV.", file=sys.stderr)
         sys.exit(1)
-    gating = reviewed_col is not None and mode != "all"
+    gating = last_reviewed_col is not None and mode != "all"
 
     updated = 0
     skipped_unreviewed = 0
@@ -88,7 +91,7 @@ def import_csv(csv_path: Path, copydeck_path: Path, out_path: Path, mode: str) -
         if not error_type or not vi_raw:
             continue  # not a real data row
 
-        if gating and _norm(row.get(reviewed_col, "")) not in TRUTHY:
+        if gating and not (row.get(last_reviewed_col) or "").strip():
             skipped_unreviewed += 1
             continue
 
@@ -118,6 +121,14 @@ def import_csv(csv_path: Path, copydeck_path: Path, out_path: Path, mode: str) -
         elif "steps" in variant:
             del variant["steps"]
 
+        if last_reviewed_col:
+            last_reviewed = (row.get(last_reviewed_col) or "").strip()
+            if last_reviewed:
+                if not DATE_RE.match(last_reviewed):
+                    print(f"Warning: '{last_reviewed}' for {error_type}[{variant_index}] is not a YYYY-MM-DD "
+                          "date; storing it anyway", file=sys.stderr)
+                variant["_lastReviewed"] = last_reviewed
+
         updated += 1
 
     with open(out_path, "w", encoding="utf-8") as f:
@@ -126,9 +137,9 @@ def import_csv(csv_path: Path, copydeck_path: Path, out_path: Path, mode: str) -
 
     print(f"Applied {updated} variant(s) → {out_path}")
     if gating:
-        print(f"Skipped {skipped_unreviewed} unreviewed row(s) (column '{reviewed_col}'). Pass --all to include them.")
-    elif reviewed_col:
-        print(f"Applied all rows; review column '{reviewed_col}' was ignored (--all).")
+        print(f"Skipped {skipped_unreviewed} undated row(s) (column '{last_reviewed_col}'). Pass --all to include them.")
+    elif last_reviewed_col:
+        print(f"Applied all rows; review dates in '{last_reviewed_col}' did not gate (--all).")
 
 
 def main():
@@ -141,9 +152,9 @@ def main():
                         help="Output JSON path (default: overwrites source copydeck)")
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--all", action="store_true",
-                       help="Apply every row, ignoring any review-status column")
+                       help="Apply every row, regardless of whether it has a Last reviewed date")
     group.add_argument("--reviewed-only", action="store_true",
-                       help="Only apply rows whose review column is TRUE (errors if no such column)")
+                       help="Only apply rows with a Last reviewed date (errors if no such column)")
     args = parser.parse_args()
 
     for p in [Path(args.csv), Path(args.copydeck)]:

@@ -4,16 +4,17 @@
 Produces the column layout the learning team works with, so the export can seed
 (or refresh) their review sheet directly:
 
-    ID, Error_type, Link to demo / code, Has been reviewed by learning team?,
+    ID, Error_type, Link to demo / code, Last reviewed (YYYY-MM-DD),
     variant_index, if_condition, Title, Summary, Why, Step_1 .. Step_5
 
   * ID                              - stable 1-based row number
   * Link to demo / code            - deep link to the matching demo example,
                                       built from docs/demo-examples.js
-  * Has been reviewed ...          - defaults to FALSE (reviewers flip to TRUE)
+  * Last reviewed (YYYY-MM-DD)     - the variant's _lastReviewed date, if set;
+                                      reviewers fill/update it to mark a row reviewed
 
-The reviewed CSV is fed back in via import_copydeck_csv.py, which only applies
-rows marked TRUE by default.
+The reviewed CSV is fed back in via import_copydeck_csv.py, which by default only
+applies rows that carry a Last reviewed date.
 
 Usage:
     python scripts/export_copydeck_csv.py
@@ -27,7 +28,7 @@ import re
 import sys
 from pathlib import Path
 
-COLUMNS = ["ID", "Error_type", "Link to demo / code", "Has been reviewed by learning team?",
+COLUMNS = ["ID", "Error_type", "Link to demo / code", "Last reviewed (YYYY-MM-DD)",
            "variant_index", "if_condition", "Title", "Summary", "Why",
            "Step_1", "Step_2", "Step_3", "Step_4", "Step_5"]
 
@@ -88,7 +89,7 @@ def export(copydeck_path: Path, out_path: Path, demo_path: Path, demo_base_url: 
                 "ID": row_id,
                 "Error_type": error_type,
                 "Link to demo / code": link,
-                "Has been reviewed by learning team?": "FALSE",
+                "Last reviewed (YYYY-MM-DD)": variant.get("_lastReviewed", ""),
                 "variant_index": i,
                 "if_condition": json.dumps(if_condition) if if_condition else "",
                 "Title": variant.get("title", ""),
